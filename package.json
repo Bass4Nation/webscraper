@@ -34,7 +34,7 @@
     "concurrently": "^7.6.0"
   },
   "bin": {
-    "your-framework-install-script": "install-script.js"
+    "your-framework-install-script": "./install-webscraper.js"
   },
   "author": "Kristoffer Snopestad Søderkvist AKA Bass4Nation",
   "license": "ISC"
