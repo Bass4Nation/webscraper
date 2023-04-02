@@ -33,6 +33,9 @@
     "@types/node": "^18.15.5",
     "concurrently": "^7.6.0"
   },
+  "bin": {
+    "your-framework-install-script": "install-script.js"
+  },
   "author": "Kristoffer Snopestad Søderkvist AKA Bass4Nation",
   "license": "ISC"
 }
