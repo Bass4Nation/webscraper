@@ -4,10 +4,10 @@ import {
   useScrapScreenshot,
   useGetListScreenshotsTaken,
   useGetLatestScreenshotsTaken,
-} from "@/helper/scrapers/scrapHTML";
+} from "../scrapers/scrapHTML"; //  Importing the webscraper framework
 import React from "react";
 import Image from "next/image";
-import styles from "../styles/Webscraper.module.css";
+import styles from "../styles/Webscraper.module.css";  //  CSS file for the webscraper
 
 const ScraperResult = () => {
   // This is just an example on how to use each of the hooks in my webscraper framework.
