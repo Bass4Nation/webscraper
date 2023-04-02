@@ -29,6 +29,7 @@
     "puppeteer": "^19.8.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "robots-txt-parser": "^2.0.3",
     "typescript": "5.0.2",
     "webscraper": "github:Bass4Nation/webscraper"
   }

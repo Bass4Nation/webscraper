@@ -6,6 +6,7 @@ const rateLimit = require("express-rate-limit"); // Added a limiter since it wou
 const cors = require("cors"); // Added cors to allow the website to access the api.
 const puppeteer = require("puppeteer"); //
 const { title } = require("process");
+const RobotsParser = require("robots-txt-parser"); // Import robots-txt-parser instead
 
 const app = express(); // Added express to create the server.
 const PORT = process.env.PORT || 3002; // Changed the port to 3000 since 8080 was already in use.
@@ -22,6 +23,24 @@ app.use((req, res, next) => {
 });
 app.use(cors()); // Added cors to allow the website to access the api.
 // More info at: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+
+// Function to fetch and parse the robots.txt file
+const canScrape = async (url) => {
+  const robotsUrl = new URL(url);
+  robotsUrl.pathname = "/robots.txt";
+  try {
+    const response = await axios.get(robotsUrl.toString());
+    const robotsParser = new RobotsParser();
+    robotsParser.parse(response.data);
+    const userAgent =
+      "scrape-bot-schoolassignment/0.3 (+https://github.com/Bass4Nation/webscraper;)";
+    return robotsParser.isAllowed(url, userAgent); // Swap the arguments for isAllowed
+  } catch (error) {
+    console.error(`Error fetching robots.txt: ${error}`);
+    return true;
+  }
+};
+
 // ----------------- Routes ----------------- //
 app.use("/scrape", limiter); // Apply rate limiter to the /scrape endpoint
 // Added a limiter since it would not stop scraping the website. So a limiter was added to stop the scraping.
@@ -29,12 +48,20 @@ app.use("/scrape", limiter); // Apply rate limiter to the /scrape endpoint
 app.get("/scrape", async (req, res) => {
   const url = req.query.url;
 
+  // Check if you are allowed to scrape the website
+  const allowedToScrape = await canScrape(url);
+  if (!allowedToScrape) {
+    res
+      .status(403)
+      .send("Scraping this website is not allowed according to robots.txt");
+    return;
+  }
   try {
     const response = await axios.get(url);
     const body = response.data;
     const $ = cheerio.load(body);
     const html = $("*"); // Changed the * to div etc.... to only scrape the div tags.
-    console.log(html.text()); // Logging the html text to the console. Logging what is being scraped to console.
+    // console.log(html.text()); // Logging the html text to the console. Logging what is being scraped to console.
 
     res.send(html.text());
   } catch (error) {
@@ -49,6 +76,15 @@ app.use("/scrapearray", limiter); // Apply rate limiter to the /scrape endpoint
 
 app.get("/scrapearray", async (req, res) => {
   const url = req.query.url;
+
+  // Check if you are allowed to scrape the website
+  const allowedToScrape = await canScrape(url);
+  if (!allowedToScrape) {
+    res
+      .status(403)
+      .send("Scraping this website is not allowed according to robots.txt");
+    return;
+  }
 
   try {
     const response = await axios.get(url);
@@ -74,6 +110,16 @@ app.get("/scrapescreenshot", async (req, res) => {
   // public/scraped-screenshots/
 
   const url = req.query.url;
+
+  // Check if you are allowed to scrape the website
+  const allowedToScrape = await canScrape(url);
+  if (!allowedToScrape) {
+    res
+      .status(403)
+      .send("Scraping this website is not allowed according to robots.txt");
+    return;
+  }
+
   // console.log(url);
   let filename = "template";
   const filetype = ".png";
