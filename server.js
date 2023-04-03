@@ -69,8 +69,6 @@ app.get("/scrapearray", async (req, res) => {
 
 // ----------------- Routes for scaping and returning as array ----------------- //
 app.get("/scrapescreenshot", async (req, res) => {
-  // Coming soon
-  // Create folder if folder does not exist
   // public/scraped-screenshots/
 
   const url = req.query.url;
@@ -107,7 +105,7 @@ app.get("/scrapescreenshotlist", async (req, res) => {
   const folder_path = "./public/scraped-screenshots";
   try {
     const list = await screenshotList(folder_path);
-    console.log(list);
+    // console.log(list); // Logging the screenshot list to the console.
     res.send(list);
   } catch (error) {
     errorcodes(error, res);
@@ -122,11 +120,44 @@ app.get("/lastscreenshottaken", async (req, res) => {
   const folder_path = "./public/scraped-screenshots";
   try {
     const list = await latestScreenshot(folder_path);
-    console.log(list);
+    // console.log(list); // Logging the screenshot list to the console. Which is the latest screenshot taken.
     res.send(list);
   } catch (error) {
     errorcodes(error, res);
   }
+});
+
+// ----------------- Routes for scrapepdf ----------------- //
+app.get("/scrapepdf", async (req, res) => {
+    // public/scraped-pdfs/
+
+    const url = req.query.url;
+    let filename = "template";
+    const filetype = ".pdf";
+
+    console.log(url);
+  
+    filename = await titleFromURL(url);
+    
+    const savepath = "./public/scraped-pdfs/" + filename + filetype;
+    const responsePath = "./scraped-pdfs/" + filename + filetype; // Path to the file from the standpoint of the client. Without public.
+  
+
+  
+    try {
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+      await page.goto(url);
+      await waitTime(4); // Wrap setTimeout in a Promise. Waiting because the page needs to load before the pdf is created.
+      await page.pdf({ format: 'A4', path: savepath , printBackground: true });
+      await browser.close();
+
+      // You may want to send a success response after the PDF is created and the browser is closed
+      res.status(200).json({ status: 'success', message: 'PDF created successfully', filePath: responsePath, filename: filename + filetype });
+
+    } catch (error) {
+      errorcodes(error, res);
+    }
 });
 
 // A function that convert link to this format : www_komplett_no_2023327164050
@@ -198,10 +229,19 @@ function extractNumber(filename) {
   return null;
 }
 
+// A function that returns a promise that resolves after a given time.
+const waitTime = async (time) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, time*1000);
+  });
+};
+
+
 // Error codes simplified
 const errorcodes = (error, code) => {
   console.error(error);
   code.status(500).send("Error occurred while scraping the website");
+  console.log("Error occurred while scraping the website");
 };
 
 // puppeteer can also make pdf. Maybe create in later stages.

@@ -4,10 +4,11 @@ import {
   useScrapScreenshot,
   useGetListScreenshotsTaken,
   useGetLatestScreenshotsTaken,
+  useScrapPdf,
 } from "../scrapers/scrapHTML"; //  Importing the webscraper framework
 import React from "react";
 import Image from "next/image";
-import styles from "../styles/Webscraper.module.css";  //  CSS file for the webscraper
+import styles from "../styles/Webscraper.module.css"; //  CSS file for the webscraper
 
 const ScraperResult = () => {
   // This is just an example on how to use each of the hooks in my webscraper framework.
@@ -22,15 +23,17 @@ const ScraperResult = () => {
   const [triggerRaw, setTriggeRaw] = React.useState(false);
   const [triggerArray, setTriggerArray] = React.useState(false);
   const [screenshotTrigger, setScreenshotTrigger] = React.useState(false);
+  const [pdfTrigger, setPdfTrigger] = React.useState(false);
 
   const [overlay, setOverlay] = React.useState(true);
 
   // -------------- Hooks  --------------
-  const screenshotUrl: any = useScrapScreenshot(url, screenshotTrigger);
+  const screenshotUrl: any = useScrapScreenshot(url, screenshotTrigger, () => setScreenshotTrigger(false));
   const screenshotList: any = useGetListScreenshotsTaken();
   const latestScreenshot: any = useGetLatestScreenshotsTaken();
-  const rawHTML: any = useScrapHTML(url, triggerRaw);
-  const htmlArray: any = useScrapHTMLArray(url, triggerArray);
+  const rawHTML: any = useScrapHTML(url, triggerRaw, () => setTriggeRaw(false));
+  const htmlArray: any = useScrapHTMLArray(url, triggerArray,  () => setTriggerArray(false));
+  const pdf: any = useScrapPdf(url, pdfTrigger,  () => setPdfTrigger(false));
 
   const listEmpty: boolean = false;
 
@@ -45,6 +48,10 @@ const ScraperResult = () => {
 
   const handleBtnClickScreenshot = () => {
     setScreenshotTrigger(!screenshotTrigger);
+  };
+
+  const handleBtnClickPdf = () => {
+    setPdfTrigger(!pdfTrigger);
   };
 
   //  -------------- Display Functions --------------
@@ -131,6 +138,27 @@ const ScraperResult = () => {
     }
   };
 
+  const displayPdfInfo = () => {
+    if (pdf) {
+      return (
+        <div className={styles.data}>
+          {/* <p>Status: {pdf.status}</p> */}
+          <h2>{pdf.message}</h2>
+          {pdf.status === "success" && (
+            <>
+              <p>Download PDF with the name:</p>
+              <p>{pdf.filename}</p>
+              <a href={pdf.filePath} download>
+                <button>Download PDF</button>
+              </a>
+            </>
+          )}
+        </div>
+      );
+    } else {
+      return;
+    }
+  };
   // --------------- Functions ---------------
   const refreshPage = () => {
     window.location.reload();
@@ -140,7 +168,8 @@ const ScraperResult = () => {
   return (
     <>
       {/*  This is just an warning when first running. Since it is a webscraper after all */}
-      {overlay ? displayWarning() : null}
+      {/* Comment over it to deactivate the warning when launching this demo */}
+      {/* {overlay ? displayWarning() : null} */}
 
       <div className={styles.webscraper}>
         <button onClick={refreshPage} className={styles.refresh_button}>
@@ -162,8 +191,10 @@ const ScraperResult = () => {
             </button>
             <button onClick={handleBtnClickRaw}>Scrape raw data</button>
             <button onClick={handleBtnClickArray}>Scrape data to array</button>
+            <button onClick={handleBtnClickPdf}>Scrape PDF</button>
           </div>
         </div>
+        {displayPdfInfo()}
         <div className={styles.data}>
           <h2>Latest screenshot taken</h2>
           {displayLatestScreenshot()}

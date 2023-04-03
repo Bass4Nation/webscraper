@@ -87,3 +87,12 @@ if (!fs.existsSync(scrapedScreenshotsFolderPath)) {
 } else {
   console.log('public/scraped-screenshots folder already exists in the target project.');
 }
+
+// Create public/scraped-pdfs folder if it doesn't exist
+const scrapedPdfsFolderPath = path.join(process.cwd(), 'public', 'scraped-pdfs');
+if (!fs.existsSync(scrapedPdfsFolderPath)) {
+  fs.mkdirSync(scrapedPdfsFolderPath, { recursive: true });
+  console.log('Created public/scraped-pdfs folder in the target project.');
+} else {
+  console.log('public/scraped-pdfs folder already exists in the target project.');
+}
