@@ -94,15 +94,19 @@ const useScrapScreenshot = (
 ) => {
   const serverUrl = serverCommand("scrapescreenshot"); // url to the server that will take screenshot of requested page.
 
-  const [elements, setElements] = useState("");
+  const [screenshotInfo, setScreenshotInfo] = useState<{
+    status: string;
+    message: string;
+    filePath: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchHTML = async () => {
       try {
-        const response = await axios.get(serverUrl + encodeURIComponent(url)); // get the html from the server sending the url
-        const elementsArray = response.data;
+        const response = await axios.get(serverUrl + encodeURIComponent(url));
+        const jsonResponse = response.data;
 
-        setElements(elementsArray);
+        setScreenshotInfo(jsonResponse);
         onCompletion();
       } catch (error: any) {
         console.log("Axios Error:", error);
@@ -122,7 +126,7 @@ const useScrapScreenshot = (
     onCompletion();
   }, [url, trigger, onCompletion]); // Empty array ensures the effect runs only on component mount
 
-  return elements;
+  return screenshotInfo;
 };
 
 const useGetListScreenshotsTaken = () => {

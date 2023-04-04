@@ -35,6 +35,7 @@
 
 /* This is the container for the search bar */
 .webscraper .search {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -42,6 +43,37 @@
     width: 100%;
     height: 100%;
 }
+
+/* -------------- OVERLAY INPUTFIELD ----------------- */
+.webscraper .search .overlay {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+
+}
+
+.webscraper .search .buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.webscraper .search .disabled {
+    pointer-events: none;  /* Disable the button */
+    opacity: 0.5;
+}
+
+.webscraper .search .inputdisabled {
+    pointer-events: none;  /* Disable the button */
+    opacity: 0.5;
+    background-color: rgba(0, 0, 0, 0.377);
+}
+
 
 .webscraper label {
     /* Remove styling from label */
@@ -280,3 +312,22 @@
     background-color: rgba(0, 0, 0, 0.075);
     transition: 0.5s;
 }
+
+/* A loading animation for loading */
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }

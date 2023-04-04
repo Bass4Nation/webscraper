@@ -72,26 +72,26 @@ app.get("/scrapescreenshot", async (req, res) => {
   // public/scraped-screenshots/
 
   const url = req.query.url;
-  // console.log(url);
   let filename = "template";
   const filetype = ".png";
 
   filename = await titleFromURL(url);
 
-  console.log(filename);
+  // console.log(filename);
 
   const savepath = "./public/scraped-screenshots/" + filename + filetype;
+  const responsePath = "./scraped-screenshots/" + filename + filetype; // Path to the file from the standpoint of the client. Without public.
 
-  const seconds = 4 * 1000;
 
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(url);
-    setTimeout(async () => {
-      await page.screenshot({ path: savepath });
-      await browser.close();
-    }, seconds);
+    await waitTime(4); // Wrap setTimeout in a Promise. Waiting because the page needs to load before the screenshot is taken.
+    await page.screenshot({ path: savepath });
+    await browser.close();
+
+    res.status(200).json({ status: 'success', message: 'Screenshot created successfully', filePath: responsePath, filename: filename + filetype });
   } catch (error) {
     errorcodes(error, res);
   }
@@ -135,7 +135,7 @@ app.get("/scrapepdf", async (req, res) => {
     let filename = "template";
     const filetype = ".pdf";
 
-    console.log(url);
+    // console.log(url);
   
     filename = await titleFromURL(url);
     

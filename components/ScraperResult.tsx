@@ -25,17 +25,32 @@ const ScraperResult = () => {
   const [screenshotTrigger, setScreenshotTrigger] = React.useState(false);
   const [pdfTrigger, setPdfTrigger] = React.useState(false);
 
-  const [overlay, setOverlay] = React.useState(true);
+  const [overlay, setOverlay] = React.useState(true);  // Warning overlay for that user must follow the rules of the website. Robots.txt
+  const [waitOverlay, setWaitOverlay] = React.useState(false); // This is for when a action is being performed and the user needs to wait for the action to finish.
 
   // -------------- Hooks  --------------
-  const screenshotUrl: any = useScrapScreenshot(url, screenshotTrigger, () => setScreenshotTrigger(false));
+
+  // This is in use and working
+  const screenshotUrl: any = useScrapScreenshot(url, screenshotTrigger, () =>
+    setScreenshotTrigger(false)
+  );
   const screenshotList: any = useGetListScreenshotsTaken();
   const latestScreenshot: any = useGetLatestScreenshotsTaken();
   const rawHTML: any = useScrapHTML(url, triggerRaw, () => setTriggeRaw(false));
-  const htmlArray: any = useScrapHTMLArray(url, triggerArray,  () => setTriggerArray(false));
-  const pdf: any = useScrapPdf(url, pdfTrigger,  () => setPdfTrigger(false));
+  const htmlArray: any = useScrapHTMLArray(url, triggerArray, () =>
+    setTriggerArray(false)
+  );
+  const pdf: any = useScrapPdf(url, pdfTrigger, () => setPdfTrigger(false));
 
-  const listEmpty: boolean = false;
+  React.useEffect(() => {
+    if (triggerRaw || triggerArray || screenshotTrigger || pdfTrigger) {
+      setWaitOverlay(true);
+    } else {
+      setWaitOverlay(false);
+    }
+  }, [triggerRaw, triggerArray, screenshotTrigger, pdfTrigger]);
+
+  // const listEmpty: boolean = false;
 
   //  ------------ Event Handlers ------------
   const handleBtnClickRaw = () => {
@@ -54,7 +69,48 @@ const ScraperResult = () => {
     setPdfTrigger(!pdfTrigger);
   };
 
+  // --------------- Styles ---------------
+  const stylesearchoverlay = waitOverlay ? styles.overlay : styles.search;
+  const styleinputbuttons = waitOverlay ? styles.disabled : styles.buttons;
+  const styleinputfield = waitOverlay ? styles.inputdisabled : styles.input;
+
   //  -------------- Display Functions --------------
+
+  // Display the input field and buttons
+  const displayInputField = () => {
+    return (
+      <div className={styles.search}>
+        <div className={stylesearchoverlay}>
+          <label>
+            URL:
+            <input
+              type="text"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className={styleinputfield}
+            />
+          </label>
+          <div className={styles.buttons}>
+            <button
+              className={styleinputbuttons}
+              onClick={handleBtnClickScreenshot}
+            >
+              Scrape Screenshot
+            </button>
+            <button className={styleinputbuttons} onClick={handleBtnClickRaw}>
+              Scrape raw data
+            </button>
+            <button className={styleinputbuttons} onClick={handleBtnClickArray}>
+              Scrape data to array
+            </button>
+            <button className={styleinputbuttons} onClick={handleBtnClickPdf}>
+              Scrape PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   // Display all screenshots taken from the screenshotListUrl array
   const displayAllScreenshots = () => {
@@ -103,25 +159,7 @@ const ScraperResult = () => {
     }
   };
 
-  // -------------- Warning --------------
-  const displayWarning = () => {
-    return (
-      <div className={styles.warning}>
-        <div>
-          <h2>Warning</h2>
-          <p>
-            This is a proof of concept. Do not use this on websites that you do
-            not have permission to scrape. Or checked after if the website has a
-            robots.txt file that disallows web scraping. To deactivate this
-            warning, remove the overlay state in the ScraperResult.tsx file in
-            components.
-          </p>
-          <button onClick={() => setOverlay(false)}>Close</button>
-        </div>
-      </div>
-    );
-  };
-
+  // Display the raw html data from the url
   const displayRawHTML = () => {
     if (rawHTML) {
       return <p className={styles.raw_data}>{rawHTML}</p>;
@@ -130,6 +168,7 @@ const ScraperResult = () => {
     }
   };
 
+  // Display the html array
   const displayHTMLArray = () => {
     if (htmlArray) {
       return <div>{htmlArray}</div>;
@@ -138,6 +177,7 @@ const ScraperResult = () => {
     }
   };
 
+  // Display pdf info and download button
   const displayPdfInfo = () => {
     if (pdf) {
       return (
@@ -159,41 +199,60 @@ const ScraperResult = () => {
       return;
     }
   };
+
+  // Display the loading animation when waiting for the data
+  const displayLoading = () => {
+    return (
+      <div>
+        <div className={styles.loader} />
+      </div>
+    );
+  };
+
+  // -------------- Warning --------------
+  const displayWarning = () => {
+    return (
+      <div className={styles.warning}>
+        <div>
+          <h2>Warning</h2>
+          <p>
+            This is a proof of concept. Do not use this on websites that you do
+            not have permission to scrape. Or checked after if the website has a
+            robots.txt file that disallows web scraping. To deactivate this
+            warning, remove the overlay state in the ScraperResult.tsx file in
+            components.
+          </p>
+          <button onClick={() => setOverlay(false)}>Close</button>
+        </div>
+      </div>
+    );
+  };
+
   // --------------- Functions ---------------
   const refreshPage = () => {
     window.location.reload();
   };
 
-  // -------------- JSX --------------
+  // -------------- useEffect --------------
+  React.useEffect(() => {
+    if(screenshotUrl){
+      refreshPage();
+    }
+  }, [screenshotUrl]);
+
+
+  // -------------- TSX --------------
   return (
     <>
       {/*  This is just an warning when first running. Since it is a webscraper after all */}
       {/* Comment over it to deactivate the warning when launching this demo */}
-      {/* {overlay ? displayWarning() : null} */}
+      {overlay ? displayWarning() : null}
 
       <div className={styles.webscraper}>
         <button onClick={refreshPage} className={styles.refresh_button}>
           Refresh
         </button>
-        <div className={styles.search}>
-          <label>
-            URL:
-            <input
-              type="text"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              className={styles.input}
-            />
-          </label>
-          <div className={styles.buttons}>
-            <button onClick={handleBtnClickScreenshot}>
-              Scrape Screenshot
-            </button>
-            <button onClick={handleBtnClickRaw}>Scrape raw data</button>
-            <button onClick={handleBtnClickArray}>Scrape data to array</button>
-            <button onClick={handleBtnClickPdf}>Scrape PDF</button>
-          </div>
-        </div>
+        {waitOverlay ? displayLoading() : displayInputField()}
         {displayPdfInfo()}
         <div className={styles.data}>
           <h2>Latest screenshot taken</h2>
