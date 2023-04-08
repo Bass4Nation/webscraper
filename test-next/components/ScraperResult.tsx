@@ -5,10 +5,13 @@ import {
   useGetListScreenshotsTaken,
   useGetLatestScreenshotsTaken,
   useScrapPdf,
+  useScrapeJson,
 } from "../scrapers/scrapHTML"; //  Importing the webscraper framework
-import React from "react";
+import { useState, useEffect, createElement, ReactNode } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Webscraper.module.css"; //  CSS file for the webscraper
+import { useToggleState } from "@/scrapers/useToggleState";
 
 const ScraperResult = () => {
   // This is just an example on how to use each of the hooks in my webscraper framework.
@@ -18,15 +21,17 @@ const ScraperResult = () => {
   // More in depth explanation:
   //  CHECK PDF FILE IN THE ROOT FOLDER OF THE PROJECT OR THE README.md FILE IN THE GITHUB REPO.
 
-  const [url, setUrl] = React.useState("");
+  const [url, setUrl] = useState("");
   //  -------------- Hooks Triggers Boolean --------------
-  const [triggerRaw, setTriggeRaw] = React.useState(false);
-  const [triggerArray, setTriggerArray] = React.useState(false);
-  const [screenshotTrigger, setScreenshotTrigger] = React.useState(false);
-  const [pdfTrigger, setPdfTrigger] = React.useState(false);
+  const [triggerRaw, setTriggerRaw] = useToggleState(false);
+  const [triggerArray, setTriggerArray] = useToggleState(false);
+  const [screenshotTrigger, setScreenshotTrigger] = useToggleState(false);
+  const [pdfTrigger, setPdfTrigger] = useToggleState(false);
+  const [jsonTrigger, setJsonTrigger] = useToggleState(false);
 
-  const [overlay, setOverlay] = React.useState(true);  // Warning overlay for that user must follow the rules of the website. Robots.txt
-  const [waitOverlay, setWaitOverlay] = React.useState(false); // This is for when a action is being performed and the user needs to wait for the action to finish.
+
+  const [overlay, setOverlay] = useState(true); // Warning overlay for that user must follow the rules of the website. Robots.txt
+  const [waitOverlay, setWaitOverlay] = useState(false); // This is for when a action is being performed and the user needs to wait for the action to finish.
 
   // -------------- Hooks  --------------
 
@@ -36,38 +41,22 @@ const ScraperResult = () => {
   );
   const screenshotList: any = useGetListScreenshotsTaken();
   const latestScreenshot: any = useGetLatestScreenshotsTaken();
-  const rawHTML: any = useScrapHTML(url, triggerRaw, () => setTriggeRaw(false));
+  const rawHTML: any = useScrapHTML(url, triggerRaw, () =>
+    setTriggerRaw(false)
+  );
   const htmlArray: any = useScrapHTMLArray(url, triggerArray, () =>
     setTriggerArray(false)
   );
   const pdf: any = useScrapPdf(url, pdfTrigger, () => setPdfTrigger(false));
+  const json: any = useScrapeJson(url, jsonTrigger, () => setJsonTrigger(false));
 
-  React.useEffect(() => {
-    if (triggerRaw || triggerArray || screenshotTrigger || pdfTrigger) {
+  useEffect(() => {
+    if (triggerRaw || triggerArray || screenshotTrigger || pdfTrigger || jsonTrigger) {
       setWaitOverlay(true);
     } else {
       setWaitOverlay(false);
     }
-  }, [triggerRaw, triggerArray, screenshotTrigger, pdfTrigger]);
-
-  // const listEmpty: boolean = false;
-
-  //  ------------ Event Handlers ------------
-  const handleBtnClickRaw = () => {
-    setTriggeRaw(!triggerRaw);
-  };
-
-  const handleBtnClickArray = () => {
-    setTriggerArray(!triggerArray);
-  };
-
-  const handleBtnClickScreenshot = () => {
-    setScreenshotTrigger(!screenshotTrigger);
-  };
-
-  const handleBtnClickPdf = () => {
-    setPdfTrigger(!pdfTrigger);
-  };
+  }, [triggerRaw, triggerArray, screenshotTrigger, pdfTrigger, jsonTrigger]);
 
   // --------------- Styles ---------------
   const stylesearchoverlay = waitOverlay ? styles.overlay : styles.search;
@@ -93,18 +82,33 @@ const ScraperResult = () => {
           <div className={styles.buttons}>
             <button
               className={styleinputbuttons}
-              onClick={handleBtnClickScreenshot}
+              onClick={() => setScreenshotTrigger()}
             >
               Scrape Screenshot
             </button>
-            <button className={styleinputbuttons} onClick={handleBtnClickRaw}>
+            <button
+              className={styleinputbuttons}
+              onClick={() => setTriggerRaw()}
+            >
               Scrape raw data
             </button>
-            <button className={styleinputbuttons} onClick={handleBtnClickArray}>
+            <button
+              className={styleinputbuttons}
+              onClick={() => setTriggerArray()}
+            >
               Scrape data to array
             </button>
-            <button className={styleinputbuttons} onClick={handleBtnClickPdf}>
+            <button
+              className={styleinputbuttons}
+              onClick={() => setPdfTrigger()}
+            >
               Scrape PDF
+            </button>
+            <button
+              className={styleinputbuttons}
+              onClick={() => setJsonTrigger()}
+            >
+              Scrape JSON
             </button>
           </div>
         </div>
@@ -171,7 +175,7 @@ const ScraperResult = () => {
   // Display the html array
   const displayHTMLArray = () => {
     if (htmlArray) {
-      return <div>{htmlArray}</div>;
+      return <div>{renderElements(htmlArray)}</div>;
     } else {
       return <div>There is no array data to display</div>;
     }
@@ -199,6 +203,30 @@ const ScraperResult = () => {
       return;
     }
   };
+
+  // Display json info and download button
+  const displayJsonInfo = () => {
+    if (json) {
+      return (
+        <div className={styles.data}>
+          {/* <p>Status: {json.status}</p> */}
+          <h2>{json.message}</h2>
+          {json.status === "success" && (
+            <>
+              <p>Download JSON with the name:</p>
+              <p>{json.filename}</p>
+              <a href={json.filePath} download>
+                <button>Download JSON</button>
+              </a>
+            </>
+          )}
+        </div>
+      );
+    } else {
+      return;
+    }
+  };
+
 
   // Display the loading animation when waiting for the data
   const displayLoading = () => {
@@ -233,13 +261,45 @@ const ScraperResult = () => {
     window.location.reload();
   };
 
+  interface ElementObject {
+    tag: string;
+    content: ReactNode | string;
+    attributes: { [key: string]: string };
+  }
+
+  const renderElements = (elementArray: ElementObject[]): ReactNode[] => {
+    return elementArray.map((element, index) => {
+      const { tag, content, attributes } = element;
+
+      if (tag !== "img") {
+        if (Array.isArray(content)) {
+          return createElement(
+            tag,
+            { key: index, ...attributes },
+            renderElements(content)
+          );
+        } else {
+          if (tag === "a" && attributes.href) {
+            // console.log(attributes);
+
+            return (
+              <Link key={index} href={attributes.href}>
+                {content}
+              </Link>
+            );
+          } else {
+            return createElement(tag, { key: index, ...attributes }, content);
+          }
+        }
+      }
+    });
+  };
   // -------------- useEffect --------------
-  React.useEffect(() => {
-    if(screenshotUrl){
+  useEffect(() => {
+    if (screenshotUrl) {
       refreshPage();
     }
   }, [screenshotUrl]);
-
 
   // -------------- TSX --------------
   return (
@@ -253,7 +313,24 @@ const ScraperResult = () => {
           Refresh
         </button>
         {waitOverlay ? displayLoading() : displayInputField()}
+        {/* display a button that would replace url in input with b4n.no */}
+        <div className={styles.data}>
+          <p>My portfolio page that is allowed for this scraping framework</p>
+          <button onClick={() => setUrl("https://b4n.no/aboutme")}>
+            Click to add b4n.no in URL input field
+          </button>
+          <button onClick={() => setUrl("http://books.toscrape.com/")}>
+            Click to add another page books.toscrape.com
+          </button>
+          <button onClick={() => setUrl("http://quotes.toscrape.com/")}>
+            Click to add another page quotes.toscrape.com/
+          </button>
+          <button onClick={() => setUrl("https://www.worldometers.info/")}>
+            Click to add another page www.worldometers.info
+          </button>
+        </div>
         {displayPdfInfo()}
+        {displayJsonInfo()}
         <div className={styles.data}>
           <h2>Latest screenshot taken</h2>
           {displayLatestScreenshot()}

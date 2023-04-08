@@ -48,8 +48,8 @@ fs.writeFileSync(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 
 console.log('The target project\'s package.json has been updated.');
 
 // Copy server.js from your framework to the target project's root directory
-const serverSourcePath = path.join(__dirname, 'server.js');
-const serverTargetPath = path.join(process.cwd(), 'server.js');
+const serverSourcePath = path.join(__dirname, 'server.ts');
+const serverTargetPath = path.join(process.cwd(), 'server.ts');
 fs.copyFileSync(serverSourcePath, serverTargetPath);
 
 console.log('Copied server.js to the target project\'s root directory.');
@@ -96,3 +96,23 @@ if (!fs.existsSync(scrapedPdfsFolderPath)) {
 } else {
   console.log('public/scraped-pdfs folder already exists in the target project.');
 }
+
+// Create public/scraped-pdfs folder if it doesn't exist
+const scrapedJsonFolderPath = path.join(process.cwd(), 'public', 'scraped-json');
+if (!fs.existsSync(scrapedJsonFolderPath)) {
+  fs.mkdirSync(scrapedJsonFolderPath, { recursive: true });
+  console.log('Created public/scraped-json folder in the target project.');
+} else {
+  console.log('public/scraped-json folder already exists in the target project.');
+}
+
+
+// Create public/scraped-pdfs folder if it doesn't exist
+const scrapedTxtFolderPath = path.join(process.cwd(), 'public', 'scraped-txt');
+if (!fs.existsSync(scrapedTxtFolderPath)) {
+  fs.mkdirSync(scrapedTxtFolderPath, { recursive: true });
+  console.log('Created public/scraped-txts folder in the target project.');
+} else {
+  console.log('public/scraped-txt folder already exists in the target project.');
+}
+

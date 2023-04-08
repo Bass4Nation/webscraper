@@ -24,15 +24,15 @@ const useScrapHTML = (
   trigger: boolean,
   onCompletion: () => void
 ) => {
-  const serverUrl = serverCommand("scrape");
-  const [rawHTML, setRawHTML] = useState("");
+  const serverUrl = serverCommand("scrape"); // url to the server that will scrape the requested page.
+  const [rawHTML, setRawHTML] = useState(""); // This is the string that will be returned.
 
   useEffect(() => {
     const fetchHTML = async () => {
       try {
-        const response = await axios.get(serverUrl + encodeURIComponent(url));
-        const html = response.data;
-        console.log(html);
+        const response = await axios.get(serverUrl + encodeURIComponent(url)); // get the html from the server sending the url
+        const html = response.data; // get the html from the response
+        // console.log(html);
 
         setRawHTML(html);
         onCompletion();
@@ -55,19 +55,20 @@ const useScrapHTMLArray = (
   trigger: boolean,
   onCompletion: () => void
 ) => {
-  const serverUrl = serverCommand("scrapearray"); // url to the server that will scrape the html
+  const serverUrl = serverCommand("scrapearray");
 
-  const [elements, setElements] = useState([]);
-  // const [cleanedElements, setCleanedElements] = useState([]); // array of elements that will be returned to the component [
+  const [elements, setElements] = useState<Array<{ tag: string; content: any }>>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchHTML = async () => {
+      setIsLoading(true);
       try {
-        const response = await axios.get(serverUrl + encodeURIComponent(url)); // get the html from the server sending the url
+        const response = await axios.get(serverUrl + encodeURIComponent(url));
         const elementsArray = response.data;
-        // console.log(elementsArray);
 
         setElements(elementsArray);
+        setIsLoading(false);
         onCompletion();
       } catch (error: any) {
         console.log("Axios Error:", error);
@@ -77,14 +78,17 @@ const useScrapHTMLArray = (
           error.response?.status,
           error.response?.headers
         );
+        setIsLoading(false);
         onCompletion();
       }
     };
 
-    if (url && trigger) {
+    if (url && trigger && !isLoading) {
       fetchHTML();
     }
-  }, [url, trigger, onCompletion]); // Empty array ensures the effect runs only on component mount
+  }, [url, trigger, onCompletion, isLoading]);
+
+  return elements;
 };
 
 const useScrapScreenshot = (
@@ -92,7 +96,7 @@ const useScrapScreenshot = (
   trigger: boolean,
   onCompletion: () => void
 ) => {
-  const serverUrl = serverCommand("scrapescreenshot"); // url to the server that will take screenshot of requested page.
+  const serverUrl = serverCommand("scrapescreenshot");
 
   const [screenshotInfo, setScreenshotInfo] = useState<{
     status: string;
@@ -123,8 +127,7 @@ const useScrapScreenshot = (
     if (url && trigger) {
       fetchHTML();
     }
-    onCompletion();
-  }, [url, trigger, onCompletion]); // Empty array ensures the effect runs only on component mount
+  }, [url, trigger, onCompletion]);
 
   return screenshotInfo;
 };
@@ -192,21 +195,24 @@ const useScrapPdf = (
   trigger: boolean,
   onCompletion: () => void
 ) => {
-  const serverUrl = serverCommand("scrapepdf"); // url to the server that will take screenshot of requested page.
+  const serverUrl = serverCommand("scrapepdf");
 
   const [pdfInfo, setPdfInfo] = useState<{
     status: string;
     message: string;
     filePath: string;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchPDF = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get(serverUrl + encodeURIComponent(url));
         const jsonResponse = response.data;
 
         setPdfInfo(jsonResponse);
+        setIsLoading(false);
         onCompletion();
       } catch (error: any) {
         console.log("Axios Error:", error);
@@ -216,17 +222,59 @@ const useScrapPdf = (
           error.response?.status,
           error.response?.headers
         );
+        setIsLoading(false);
         onCompletion();
       }
     };
 
-    if (url && trigger) {
+    if (url && trigger && !isLoading) {
       fetchPDF();
     }
-  }, [url, trigger, onCompletion]);
+  }, [url, trigger, onCompletion, isLoading]);
 
   return pdfInfo;
 };
+const useScrapeJson = (url: string, trigger: boolean, onCompletion: () => void) => {
+  const serverUrl = serverCommand("scrapejson");
+
+  const [jsonInfo, setJsonInfo] = useState<{
+    status: string;
+    message: string;
+    filePath: string;
+  } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchJSON = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(serverUrl + encodeURIComponent(url));
+        const jsonResponse = response.data;
+
+        setJsonInfo(jsonResponse);
+        setIsLoading(false);
+        onCompletion();
+      } catch (error: any) {
+        console.log("Axios Error:", error);
+        console.log(
+          "Error details:",
+          error.response?.data,
+          error.response?.status,
+          error.response?.headers
+        );
+        setIsLoading(false);
+        onCompletion();
+      }
+    };
+
+    if (url && trigger && !isLoading) {
+      fetchJSON();
+    }
+  }, [url, trigger, onCompletion, isLoading]);
+
+  return jsonInfo;
+};
+
 
 const serverCommand = (command: string) => {
   return "http://localhost:3002/" + command + "?url="; // command is the server command to be executed
@@ -238,5 +286,6 @@ export {
   useGetListScreenshotsTaken,
   useGetLatestScreenshotsTaken,
   useScrapPdf,
+  useScrapeJson,
 };
 // // Path: helper\scrapers\scrapHTML.ts

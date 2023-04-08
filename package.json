@@ -1,11 +1,11 @@
 {
   "name": "webscraper",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "This webscraper can take screenshot and get data from websites. This is a school assignment 2023.",
   "main": "server",
   "scripts": {
     "test": "jest",
-    "start-server": "node server.js",
+    "start-server": "ts-node server.ts",
     "start-client": "next dev",
     "dev": "concurrently \"npm run start-server\" \"npm run start-client\"",
     "build": "next build",
@@ -27,6 +27,8 @@
     "puppeteer": "^19.8.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "ts-node": "^10.9.1",
+    "robots-txt-parser": "^2.0.3",
     "typescript": "5.0.2"
   },
   "devDependencies": {

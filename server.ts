@@ -6,6 +6,7 @@ const rateLimit = require("express-rate-limit"); // Added a limiter since it wou
 const cors = require("cors"); // Added cors to allow the website to access the api.
 const puppeteer = require("puppeteer"); //
 const { title } = require("process");
+const fs = require("fs");
 
 const app = express(); // Added express to create the server.
 const PORT = process.env.PORT || 3002; // Changed the port to 3000 since 8080 was already in use.
@@ -16,7 +17,7 @@ const limiter = rateLimit({
   message: "Too many requests, please try again later.",
 });
 
-app.use((req, res, next) => {
+app.use((req: any, res: any, next: any) => {
   console.log(`Request: ${req.method} ${req.path}`);
   next();
 });
@@ -26,7 +27,7 @@ app.use(cors()); // Added cors to allow the website to access the api.
 app.use("/scrape", limiter); // Apply rate limiter to the /scrape endpoint
 // Added a limiter since it would not stop scraping the website. So a limiter was added to stop the scraping.
 
-app.get("/scrape", async (req, res) => {
+app.get("/scrape", async (req: any, res: any) => {
   const url = req.query.url;
 
   try {
@@ -47,28 +48,69 @@ app.get("/scrape", async (req, res) => {
 app.use("/scrapearray", limiter); // Apply rate limiter to the /scrape endpoint
 // Added a limiter since it would not stop scraping the website. So a limiter was added to stop the scraping.
 
-app.get("/scrapearray", async (req, res) => {
+app.get("/scrapearray", async (req: any, res: any) => {
   const url = req.query.url;
 
   try {
     const response = await axios.get(url);
     const body = response.data;
     const $ = cheerio.load(body);
-    const elements = [];
 
-    $("*").each(function () {
-      elements.push($(this).html());
-      // console.log($(this).html());
-    });
+    const createObject = (element: any) => {
+      const tagName = element.prop("tagName").toLowerCase();
+      const children = element.children().toArray().map((child: any) => createObject($(child)));
 
-    res.send(elements);
+      return {
+        tag: tagName,
+        content: children.length > 0 ? children : element.text(),
+      };
+    };
+
+    const elements = $("body > *").toArray().map((element: any) => createObject($(element)));
+    console.log(elements); // Logging the html text to the console. Logging what is being scraped to console.
+
+    res.json(elements);
   } catch (error) {
     errorcodes(error, res);
   }
 });
 
+app.get("/scrapejson", async (req: any, res: any) => {
+  const url = req.query.url;
+  try {
+    const response = await axios.get(url);
+    const body = response.data;
+    const $ = cheerio.load(body);
+    let filename = "template"; // Default filename
+    const filetype = ".json"; // Filetype
+    const savepath = "./public/scraped-json/"; // Path to folder where json is placed from standpoint to the server
+    filename = await titleFromURL(url); // Get the title from the url.
+    
+
+    const createObject = (element: any) => {
+      const tagName = element.prop("tagName").toLowerCase(); // Get the tag name and make it lowercase.
+      const children = element.children().toArray().map((child: any) => createObject($(child))); // Get the children of the element and create an object for each child.
+
+      return {
+        tag: tagName,
+        content: children.length > 0 ? children : element.text(),
+      }; // Return the object with the tag name and the content.
+    };
+
+    const elements = $("body > *").toArray().map((element: any) => createObject($(element))); // Get the body and all the children of the body and create an object for each child.
+    // console.log(elements);
+
+    // Convert the elements array to a string representation
+    const elementsString = JSON.stringify(elements, null, 2); 
+
+    fileWriterScrappedData(savepath, filename, filetype ,elementsString, res); // Write the file to the server.
+
+  } catch (error) {
+    errorcodes(error, res);
+  }
+});
 // ----------------- Routes for scaping and returning as array ----------------- //
-app.get("/scrapescreenshot", async (req, res) => {
+app.get("/scrapescreenshot", async (req: any, res: any) => {
   // public/scraped-screenshots/
 
   const url = req.query.url;
@@ -99,7 +141,7 @@ app.get("/scrapescreenshot", async (req, res) => {
 
 // ----------------- Routes for scaping and returning as array ----------------- //
 // Get a list over all screenshots taken. With filepath and a way display them.
-app.get("/scrapescreenshotlist", async (req, res) => {
+app.get("/scrapescreenshotlist", async (req: any, res: any) => {
   // Path to folder where screenshots is placed from standpoint to the server
   //  ./public/scraped-screenshots/......
   const folder_path = "./public/scraped-screenshots";
@@ -114,7 +156,7 @@ app.get("/scrapescreenshotlist", async (req, res) => {
 
 // ----------------- Routes for Latest screenshot ----------------- //
 // Get the last screenshot taken. With filepath and a way display them.
-app.get("/lastscreenshottaken", async (req, res) => {
+app.get("/lastscreenshottaken", async (req: any, res: any) => {
   // Path to folder where screenshots is placed from standpoint to the server"
   //  ./public/scraped-screenshots/......
   const folder_path = "./public/scraped-screenshots";
@@ -128,7 +170,7 @@ app.get("/lastscreenshottaken", async (req, res) => {
 });
 
 // ----------------- Routes for scrapepdf ----------------- //
-app.get("/scrapepdf", async (req, res) => {
+app.get("/scrapepdf", async (req: any, res: any) => {
     // public/scraped-pdfs/
 
     const url = req.query.url;
@@ -160,10 +202,27 @@ app.get("/scrapepdf", async (req, res) => {
     }
 });
 
+async function fileWriterScrappedData ( savepath: string, filename: string, fileformat: string, data: any, res: any) {
+  console.log("Writing file" + filename + fileformat);
+  try {
+        // Save the elements string as a text file
+        fs.writeFile(savepath+filename+fileformat, data, (err: any) => {
+          if (err) {
+            console.error("Error writing text file:", err);
+            res.status(500).json({ error: "Error saving the scraped data to a file" });
+          } else {
+            res.json({ success: true, message: "Scraped data saved to " + filename + fileformat });
+          }
+        });
+  } catch (error) {
+    console.error("Error writing text file:", error);
+  }
+}
+
 // A function that convert link to this format : www_komplett_no_2023327164050
 // Remove http: or https: and replace all special characters with _
 // Fine for now. Can be used as name for files saved on server.
-async function titleFromURL(url) {
+async function titleFromURL(url: string) {
   const date = new Date();
   // Get timestamp from 1970-01-01 00:00:00
   const milliseconds = date.getTime();
@@ -179,16 +238,16 @@ async function titleFromURL(url) {
 }
 
 //  A function that returns a list of all files in a folder with path to the file.
-const screenshotList = async (folder_path) => {
+const screenshotList = async (folder_path: string) => {
   const fs = require("fs"); // File system module to read files
   const path = require("path"); // Path to file system folder and files in folder
 
   const files = fs.readdirSync(folder_path); // Read all files in folder
 
-  const arr = [];
+  const arr: any = [];
 
   //  Loop through all files and add them to an array with path to the file.
-  files.forEach((file) => {
+  files.forEach((file: any) => {
     arr.push({
       name: file,
       path: path.join(folder_path, file),
@@ -199,14 +258,14 @@ const screenshotList = async (folder_path) => {
 };
 
 // A function that returns the latest screenshot taken.
-const latestScreenshot = async (folder_path) => {
+const latestScreenshot = async (folder_path: string) => {
   const allfiles = await screenshotList(folder_path); // Get all files in folder
   let latestFile = null; // Create a variable to store the latest file
   let maxNumber = 0; // Create a variable to store the maximum number found in filenames
 
   // Loop through all files and check if the number in the filename is larger than the current maxNumber
-  allfiles.forEach((file) => {
-    const fileNumber = extractNumber(file.name); // Get the number from the filename
+  allfiles.forEach((file: any) => {
+    const fileNumber: any = extractNumber(file.name); // Get the number from the filename
     if (fileNumber > maxNumber) {
       maxNumber = fileNumber;
       latestFile = file;
@@ -218,7 +277,7 @@ const latestScreenshot = async (folder_path) => {
 };
 
 // A function that extracts the timestamp from the filename.
-function extractNumber(filename) {
+function extractNumber(filename: string) {
   const regex = /.*-(\d+)\./;
   const result = filename.match(regex);
 
@@ -230,7 +289,7 @@ function extractNumber(filename) {
 }
 
 // A function that returns a promise that resolves after a given time.
-const waitTime = async (time) => {
+const waitTime = async (time: number) => {
   return new Promise((resolve) => {
     setTimeout(resolve, time*1000);
   });
@@ -238,7 +297,7 @@ const waitTime = async (time) => {
 
 
 // Error codes simplified
-const errorcodes = (error, code) => {
+const errorcodes = (error: any, code: any) => {
   console.error(error);
   code.status(500).send("Error occurred while scraping the website");
   console.log("Error occurred while scraping the website");
