@@ -44,6 +44,24 @@ app.get("/scrape", async (req: any, res: any) => {
   }
 });
 
+app.get("/scrapeh1", async (req: any, res: any) => {
+  const url = req.query.url;
+
+  try {
+    const response = await axios.get(url);
+    const body = response.data;
+    const $ = cheerio.load(body);
+    const html = $("h1"); // Extract only the h1 element
+    const text = html.text().trim(); // Get the text and remove any whitespace
+    console.log(text);
+
+    res.send(text);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error occurred while scraping the website");
+  }
+});
+
 // ----------------- Routes for scaping and returning as array ----------------- //
 app.use("/scrapearray", limiter); // Apply rate limiter to the /scrape endpoint
 // Added a limiter since it would not stop scraping the website. So a limiter was added to stop the scraping.
@@ -309,3 +327,7 @@ const errorcodes = (error: any, code: any) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
+// export default app; // Export the app to be used in other files.
+export default app; // Export the app to be used in other files.
