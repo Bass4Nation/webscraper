@@ -354,6 +354,6 @@ const ScraperDemo = () => {
   );
 };
 
-export default ScraperResult;
+export default ScraperDemo;
 
 // Path: components\ScraperResult.ts
