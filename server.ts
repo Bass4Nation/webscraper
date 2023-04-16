@@ -11,6 +11,16 @@ const fs = require("fs");
 const app = express(); // Added express to create the server.
 const PORT = process.env.PORT || 3002; // Changed the port to 3000 since 8080 was already in use.
 
+// ----------------- Start the server ----------------- //
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
+
+const server = app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
+
+
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   max: 10, // Limit each IP to 10 requests per windowMs
@@ -324,10 +334,7 @@ const errorcodes = (error: any, code: any) => {
 // puppeteer can also make pdf. Maybe create in later stages.
 
 // Prints in terminal when the server is starting. It is this port that the requests are going through.
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
 
 
 // export default app; // Export the app to be used in other files.
-export default app; // Export the app to be used in other files.
+export default server; // Export the app to be used in other files.

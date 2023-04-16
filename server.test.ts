@@ -2,9 +2,9 @@
 import request from 'supertest';
 import axios from 'axios';
 import cheerio from 'cheerio';
-import app from './server';
+import server from './server';
 
-let server: any;
+const app = server;
 
 // Mock axios get request
 jest.mock('axios');
@@ -105,6 +105,7 @@ describe("GET /scrapearray", () => {
     // Reset the axios.get mock
     mockedAxios.get.mockReset();
   });
+
 });
 
 // describe("GET /scrapescreenshot", () => {
@@ -135,3 +136,11 @@ describe("GET /scrapearray", () => {
 
 // });
 
+//  ------------ Server close ------------    
+afterAll((done) => {
+  // Closing the server
+  server.close(() => {
+    console.log('Server closed');
+    done();
+  });
+});
