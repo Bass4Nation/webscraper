@@ -13,7 +13,7 @@ import Image from "next/image";
 import styles from "../styles/Webscraper.module.css"; //  CSS file for the webscraper
 import { useToggleState } from "@/scrapers/useToggleState";
 
-const ScraperResult = () => {
+const ScraperDemo = () => {
   // This is just an example on how to use each of the hooks in my webscraper framework.
   // The hooks are located in the helper folder.
   // The hooks are used to scrape data from a website and return the data in a JSON format.
