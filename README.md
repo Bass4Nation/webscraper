@@ -18,7 +18,7 @@ Note: This is a work in progress. Some elements may not be implemented yet.
 This is how I would done it at a start next js project.
 1. In pages/index.tsx.
     1. `import "ScraperResult" from '@/components/ScraperResult.tsx' `
-    2. Add `<ScraperResult />` somewhere in the frontend in the file.
+    2. Add `<ScraperDemo />` somewhere in the frontend in the file. (Must be in the front end web part of the project.)
     3. In terminal npm run dev
     4. In the terminal it will say that start-server and start-client has started at port 3000 and 3002.
     5. Just copy a url from any pages. Ex: https://b4n.no/ it is okey to use since it is my portfolio page and I allow the use of a scraper on that page.
