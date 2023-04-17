@@ -337,4 +337,4 @@ const errorcodes = (error: any, code: any) => {
 
 
 // export default app; // Export the app to be used in other files.
-export default server; // Export the app to be used in other files.
+// export default server; // Export the app to be used in other files. Only Uncomment this when testing with Jest.
