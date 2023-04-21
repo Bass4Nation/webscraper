@@ -6,14 +6,16 @@ import {
   useGetLatestScreenshotsTaken,
   useScrapPdf,
   useScrapeJson,
+  useScrapeProduct,
 } from "../scrapers/scrapHTML"; //  Importing the webscraper framework
 import { useState, useEffect, createElement, ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Webscraper.module.css"; //  CSS file for the webscraper
 import { useToggleState } from "@/scrapers/useToggleState";
+import React from "react";
 
-const ScraperResult = () => {
+const ScraperDemo = () => {
   // This is just an example on how to use each of the hooks in my webscraper framework.
   // The hooks are located in the helper folder.
   // The hooks are used to scrape data from a website and return the data in a JSON format.
@@ -22,12 +24,14 @@ const ScraperResult = () => {
   //  CHECK PDF FILE IN THE ROOT FOLDER OF THE PROJECT OR THE README.md FILE IN THE GITHUB REPO.
 
   const [url, setUrl] = useState("");
+  const [store, setStore] = useState("power");
   //  -------------- Hooks Triggers Boolean --------------
   const [triggerRaw, setTriggerRaw] = useToggleState(false);
   const [triggerArray, setTriggerArray] = useToggleState(false);
   const [screenshotTrigger, setScreenshotTrigger] = useToggleState(false);
   const [pdfTrigger, setPdfTrigger] = useToggleState(false);
   const [jsonTrigger, setJsonTrigger] = useToggleState(false);
+  const [datasetTrigger, setDatasetTrigger] = useToggleState(false);
 
 
   const [overlay, setOverlay] = useState(true); // Warning overlay for that user must follow the rules of the website. Robots.txt
@@ -49,14 +53,16 @@ const ScraperResult = () => {
   );
   const pdf: any = useScrapPdf(url, pdfTrigger, () => setPdfTrigger(false));
   const json: any = useScrapeJson(url, jsonTrigger, () => setJsonTrigger(false));
+  // const dataset: any = useScrapeProduct(store,encodeURIComponent("Playstation 5"), datasetTrigger, () => setDatasetTrigger(false));
+  const dataset: any = useScrapeProduct(store, url , datasetTrigger, () => setDatasetTrigger(false));
 
   useEffect(() => {
-    if (triggerRaw || triggerArray || screenshotTrigger || pdfTrigger || jsonTrigger) {
+    if (triggerRaw || triggerArray || screenshotTrigger || pdfTrigger || jsonTrigger || datasetTrigger) {
       setWaitOverlay(true);
     } else {
       setWaitOverlay(false);
     }
-  }, [triggerRaw, triggerArray, screenshotTrigger, pdfTrigger, jsonTrigger]);
+  }, [triggerRaw, triggerArray, screenshotTrigger, pdfTrigger, jsonTrigger, datasetTrigger]);
 
   // --------------- Styles ---------------
   const stylesearchoverlay = waitOverlay ? styles.overlay : styles.search;
@@ -114,6 +120,18 @@ const ScraperResult = () => {
         </div>
       </div>
     );
+  };
+
+  const displayDatasetProduct = () => {
+
+    return (
+      <div className={styles.data}>
+        <h2>Use input above for poduct name</h2>
+        <button onClick={() => handleButtonStoreClick("komplett")} >Get data From Komplett</button>
+        <button onClick={() => handleButtonStoreClick("elkjop")}>Get data From Elkjøp</button>
+        <button onClick={() => handleButtonStoreClick("power")}>Get data From Power</button>
+      </div>
+    )
   };
 
   // Display all screenshots taken from the screenshotListUrl array
@@ -294,6 +312,11 @@ const ScraperResult = () => {
       }
     });
   };
+
+  const handleButtonStoreClick = (store: string) => {
+    setStore(store);
+    setDatasetTrigger();
+  } ;
   // -------------- useEffect --------------
   useEffect(() => {
     if (screenshotUrl) {
@@ -329,6 +352,7 @@ const ScraperResult = () => {
             Click to add another page www.worldometers.info
           </button>
         </div>
+        {displayDatasetProduct()}
         {displayPdfInfo()}
         {displayJsonInfo()}
         <div className={styles.data}>
@@ -354,6 +378,6 @@ const ScraperResult = () => {
   );
 };
 
-export default ScraperResult;
+export default ScraperDemo;
 
 // Path: components\ScraperResult.ts

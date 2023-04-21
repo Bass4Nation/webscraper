@@ -1,4 +1,4 @@
-// This file is javascript code since I did not get the Typescript version to work.
+const UserAgent = require("user-agents");
 const express = require("express"); // Added express to create the server.
 const axios = require("axios"); // Added axios to scrape the website.
 const cheerio = require("cheerio"); // Added cheerio to scrape the website.
@@ -7,6 +7,8 @@ const cors = require("cors"); // Added cors to allow the website to access the a
 const puppeteer = require("puppeteer"); //
 const { title } = require("process");
 const fs = require("fs");
+
+
 
 const app = express(); // Added express to create the server.
 const PORT = process.env.PORT || 3002; // Changed the port to 3000 since 8080 was already in use.
@@ -113,7 +115,7 @@ app.get("/scrapejson", async (req: any, res: any) => {
     const filetype = ".json"; // Filetype
     const savepath = "./public/scraped-json/"; // Path to folder where json is placed from standpoint to the server
     filename = await titleFromURL(url); // Get the title from the url.
-    
+
 
     const createObject = (element: any) => {
       const tagName = element.prop("tagName").toLowerCase(); // Get the tag name and make it lowercase.
@@ -129,9 +131,9 @@ app.get("/scrapejson", async (req: any, res: any) => {
     // console.log(elements);
 
     // Convert the elements array to a string representation
-    const elementsString = JSON.stringify(elements, null, 2); 
+    const elementsString = JSON.stringify(elements, null, 2);
 
-    fileWriterScrappedData(savepath, filename, filetype ,elementsString, res); // Write the file to the server.
+    fileWriterScrappedData(savepath, filename, filetype, elementsString, res); // Write the file to the server.
 
   } catch (error) {
     errorcodes(error, res);
@@ -199,49 +201,75 @@ app.get("/lastscreenshottaken", async (req: any, res: any) => {
 
 // ----------------- Routes for scrapepdf ----------------- //
 app.get("/scrapepdf", async (req: any, res: any) => {
-    // public/scraped-pdfs/
+  // public/scraped-pdfs/
 
-    const url = req.query.url;
-    let filename = "template";
-    const filetype = ".pdf";
+  const url = req.query.url;
+  let filename = "template";
+  const filetype = ".pdf";
 
-    // console.log(url);
-  
-    filename = await titleFromURL(url);
-    
-    const savepath = "./public/scraped-pdfs/" + filename + filetype;
-    const responsePath = "./scraped-pdfs/" + filename + filetype; // Path to the file from the standpoint of the client. Without public.
-  
+  // console.log(url);
 
-  
-    try {
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-      await page.goto(url);
-      await waitTime(4); // Wrap setTimeout in a Promise. Waiting because the page needs to load before the pdf is created.
-      await page.pdf({ format: 'A4', path: savepath , printBackground: true });
-      await browser.close();
+  filename = await titleFromURL(url);
 
-      // You may want to send a success response after the PDF is created and the browser is closed
-      res.status(200).json({ status: 'success', message: 'PDF created successfully', filePath: responsePath, filename: filename + filetype });
+  const savepath = "./public/scraped-pdfs/" + filename + filetype;
+  const responsePath = "./scraped-pdfs/" + filename + filetype; // Path to the file from the standpoint of the client. Without public.
 
-    } catch (error) {
-      errorcodes(error, res);
-    }
+
+
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.goto(url);
+    await waitTime(4); // Wrap setTimeout in a Promise. Waiting because the page needs to load before the pdf is created.
+    await page.pdf({ format: 'A4', path: savepath, printBackground: true });
+    await browser.close();
+
+    // You may want to send a success response after the PDF is created and the browser is closed
+    res.status(200).json({ status: 'success', message: 'PDF created successfully', filePath: responsePath, filename: filename + filetype });
+
+  } catch (error) {
+    errorcodes(error, res);
+  }
 });
 
-async function fileWriterScrappedData ( savepath: string, filename: string, fileformat: string, data: any, res: any) {
+app.get("/scrapproduct", async (req: any, res: any) => {
+  console.log("GET /scrapproduct called with query: ", req.query);
+
+  const store: any = req.query.url;
+
+  const product = req.query.product;
+  console.log("Product: ", product);
+
+
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const userAgent = new UserAgent();
+    await page.setUserAgent(userAgent.toString());
+    // await page.goto(url);
+    await scrapFromStore(page, store, product)
+    await waitTime(4); // Wrap setTimeout in a Promise. Waiting because the page needs to load before the screenshot is taken.
+    await page.screenshot({ path: `${store}after.png` });
+    await browser.close();
+    res.status(200).json({ status: 'success', message: 'Scraping complete' });
+  } catch (error) {
+    errorcodes(error, res);
+  }
+
+});
+
+async function fileWriterScrappedData(savepath: string, filename: string, fileformat: string, data: any, res: any) {
   console.log("Writing file" + filename + fileformat);
   try {
-        // Save the elements string as a text file
-        fs.writeFile(savepath+filename+fileformat, data, (err: any) => {
-          if (err) {
-            console.error("Error writing text file:", err);
-            res.status(500).json({ error: "Error saving the scraped data to a file" });
-          } else {
-            res.json({ success: true, message: "Scraped data saved to " + filename + fileformat });
-          }
-        });
+    // Save the elements string as a text file
+    fs.writeFile(savepath + filename + fileformat, data, (err: any) => {
+      if (err) {
+        console.error("Error writing text file:", err);
+        res.status(500).json({ error: "Error saving the scraped data to a file" });
+      } else {
+        res.json({ success: true, message: "Scraped data saved to " + filename + fileformat });
+      }
+    });
   } catch (error) {
     console.error("Error writing text file:", error);
   }
@@ -255,9 +283,8 @@ async function titleFromURL(url: string) {
   // Get timestamp from 1970-01-01 00:00:00
   const milliseconds = date.getTime();
 
-  const timestamp = `${date.getFullYear()}${
-    date.getMonth() + 1
-  }${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}-${milliseconds}`;
+  const timestamp = `${date.getFullYear()}${date.getMonth() + 1
+    }${date.getDate()}${date.getHours()}${date.getMinutes()}${date.getSeconds()}-${milliseconds}`;
   const filename = `${url
     .replace(/(^\w+:|^)\/\//, "")
     .replace(/[^a-zA-Z0-9_]/g, "_")}_${timestamp}`;
@@ -303,6 +330,168 @@ const latestScreenshot = async (folder_path: string) => {
 
   return latestFile;
 };
+// ----------------------------- -------------------------------
+//  A function that scrap data from a specific store and product.
+type StoreName = "komplett" | "power" | "elkjop" | "all";
+
+const scrapFromStore = async (page: any, store: StoreName, product: string) => {
+  console.log("Scraping from store: " + store + " and product: " + product);
+
+  const encodedProduct = encodeURIComponent(product);
+
+  const storeUrls: Record<StoreName, string> = {
+    "komplett": "https://www.komplett.no/search?q=" + encodedProduct,
+    "power": "https://www.power.no/search/?q=" + encodedProduct,
+    "elkjop": "https://www.elkjop.no/search/" + encodedProduct,
+    "all": "",
+  };
+  const searchProduct: string = storeUrls[store] || storeUrls["komplett"];
+  console.log(searchProduct);
+
+  //  ----------- Handle the different stores  ----------------
+  // -------------------- Power ------------------------------
+  async function handlePowerScraping(page: any) {
+    await page.goto(searchProduct, { waitUntil: 'networkidle0' });
+
+    console.log("Scraping from power");
+    const acceptCookies = await page.$('button.coi-banner__accept'); // Find the accept cookies button
+    if (acceptCookies) {
+      await acceptCookies.click();
+    }
+
+    // Find the product by its name
+    const productToFind: string = product;
+  // Find the product by a partial name match
+  const productElement = await page.$x(`//a[contains(@class, 'product-item')]//h6[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ', 'abcdefghijklmnopqrstuvwxyzæøå'), '${productToFind.toLowerCase()}')]`);
+
+  if (productElement.length > 0) {
+    // Product found, now find the 'a' element with the class 'product-item'
+    const productLinkElement = await productElement[0].$x(`./ancestor::a[contains(@class, 'product-item')]`);
+
+    if (productLinkElement.length > 0) {
+      // Get the 'href' attribute of the product link
+      const href = await page.evaluate((el: any) => el.getAttribute('href'), productLinkElement[0]);
+
+      // Navigate to the product page
+      await page.goto("https://www.power.no"+href, { waitUntil: 'networkidle0' });
+
+      // Perform any actions you want on the product page
+      console.log('Navigated to the product page:', href);
+    } else {
+      console.log('Product link not found for:', productToFind);
+    }
+  } else {
+    console.log('Product not found:', productToFind);
+  }
+    await waitTime(2);
+    await page.screenshot({ path: `power.png` });
+    console.log("Scraping from power COMPLETE");
+
+  }
+
+  // -------------------- Komplett ------------------------------
+  async function handleKomplettScraping(page: any) {
+    // Implementation for Komplett store
+    console.log("Scraping from komplett");
+    await page.goto(searchProduct, { waitUntil: ['load', 'networkidle0'] });
+    const acceptCookies = await page.$('button.btn-large.primary'); // Find the accept cookies button
+    if (acceptCookies) {
+      await acceptCookies.click();
+    } else { console.log("No cookies to accept"); }
+    // Find the product by its name
+    await page.screenshot({ path: `komplett.png` });
+  
+    const productToFind: string = product;
+    const productElement = await page.$x(`//div[contains(@class, 'name')]//h2[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), "${productToFind.toLowerCase()}")]`);
+
+    if (productElement.length > 0) {
+      console.log('Product found:', productToFind);
+      
+      // Product found, now find the 'a' element with the class 'product-link'
+      const productLinkElement = await productElement[0].$x(`./ancestor::div[contains(@class, 'name')]/a[contains(@class, 'product-link')]`);
+  
+      if (productLinkElement.length > 0) {
+    //     // Get the 'href' attribute of the product link
+        console.log("Product link found");
+        
+
+        const href = await page.evaluate((el: any) => el.getAttribute('href'), productLinkElement[0]);
+        console.log("href: " + href);
+        
+  
+        // Navigate to the product page
+        await page.goto("https://www.komplett.no" + href, { waitUntil: 'networkidle0' });
+ 
+        // Perform any actions you want on the product page
+        console.log('Navigated to the product page:', href);
+      } else {
+        console.log('Product link not found for:', productToFind);
+      }
+    } else {
+      console.log('Product not found:', productToFind);
+    }
+
+    console.log("Scraping from komplett COMPLETE");
+
+  }
+
+
+  // -------------------- Elkjop ------------------------------
+  async function handleElkjopScraping(page: any) {
+    // Implementation for Elkjop store
+    console.log("Scraping from elkjop");
+    // await page.goto(searchProduct, {  timeout: 60000  });
+    await page.goto(searchProduct, { waitUntil: ['load', 'networkidle0'] });
+    const productToFind: string = product;
+  // Find the product by a partial name match
+  const productElement = await page.$x(`//h2[contains(@class, 'h2 ng-star-inserted')]//a[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ', 'abcdefghijklmnopqrstuvwxyzæøå'), '${productToFind.toLowerCase()}')]`);
+
+  if (productElement.length > 0) {
+    // Get the 'href' attribute of the product link
+    const href = await page.evaluate((el: any) => el.getAttribute('href'), productElement[0]);
+
+    // Navigate to the product page
+    await page.goto("https://www.elkjop.no/"+href, { waitUntil: 'networkidle0' });
+
+    // Perform any actions you want on the product page
+    console.log('Navigated to the product page:', href);
+  } else {
+    console.log('Product not found:', productToFind);
+  }
+
+      
+  }
+
+  // -----------------  All stores -----------------------------
+  async function handleAllStores(page: any) {
+    // Implementation for all stores one at a time
+    console.log("Scraping from all stores");
+    await handlePowerScraping(page);
+    await handleKomplettScraping(page);
+    await handleElkjopScraping(page);
+  }
+
+  // Create a mapping from store names to their handling functions
+  const storeHandlers: Record<StoreName, (page: any) => Promise<void>> = {
+    "power": handlePowerScraping,
+    "komplett": handleKomplettScraping,
+    "elkjop": handleElkjopScraping,
+    "all": handleAllStores,
+  };
+
+  // Use the storeHandlers object to call the appropriate handling function
+  const handler = storeHandlers[store];
+  if (handler) {
+    await handler(page);
+  } else {
+    console.log("No store found");
+  }
+
+  await waitTime(2);
+  await page.screenshot({ path: `${store}.png` });
+
+}
+
 
 // A function that extracts the timestamp from the filename.
 function extractNumber(filename: string) {
@@ -319,7 +508,7 @@ function extractNumber(filename: string) {
 // A function that returns a promise that resolves after a given time.
 const waitTime = async (time: number) => {
   return new Promise((resolve) => {
-    setTimeout(resolve, time*1000);
+    setTimeout(resolve, time * 1000);
   });
 };
 
