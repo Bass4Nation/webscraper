@@ -130,6 +130,7 @@ const ScraperDemo = () => {
         <button onClick={() => handleButtonStoreClick("komplett")} >Get data From Komplett</button>
         <button onClick={() => handleButtonStoreClick("elkjop")}>Get data From Elkjøp</button>
         <button onClick={() => handleButtonStoreClick("power")}>Get data From Power</button>
+        <button onClick={() => handleButtonStoreClick("all")}>Get data from all above</button>
       </div>
     )
   };

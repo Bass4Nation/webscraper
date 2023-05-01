@@ -60,5 +60,7 @@ import ScraperResult from '@/components/ScraperResult.tsx'
 
 <ScraperResult /> 
 
+npm install user-agents
+
 
 
