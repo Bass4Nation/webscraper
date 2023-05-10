@@ -513,7 +513,7 @@ const waitTime = async (time: number) => {
 };
 
 
-// Error codes simplified
+// Error codes simplified - easier to just call this function.
 const errorcodes = (error: any, code: any) => {
   console.error(error);
   code.status(500).send("Error occurred while scraping the website");

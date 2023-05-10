@@ -1,13 +1,13 @@
 import {
   useScrapHTML,
   useScrapHTMLArray,
-  useScrapScreenshot,
   useGetListScreenshotsTaken,
   useGetLatestScreenshotsTaken,
   useScrapPdf,
   useScrapeJson,
   useScrapeProduct,
 } from "../scrapers/scrapHTML"; //  Importing the webscraper framework
+import { useScrapScreenshot } from "@/hooks/useScrapScreenshot";
 import { useState, useEffect, createElement, ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -39,7 +39,6 @@ const ScraperDemo = () => {
 
   // -------------- Hooks  --------------
 
-  // This is in use and working
   const screenshotUrl: any = useScrapScreenshot(url, screenshotTrigger, () =>
     setScreenshotTrigger(false)
   );
@@ -54,7 +53,7 @@ const ScraperDemo = () => {
   const pdf: any = useScrapPdf(url, pdfTrigger, () => setPdfTrigger(false));
   const json: any = useScrapeJson(url, jsonTrigger, () => setJsonTrigger(false));
   // const dataset: any = useScrapeProduct(store,encodeURIComponent("Playstation 5"), datasetTrigger, () => setDatasetTrigger(false));
-  const dataset: any = useScrapeProduct(store, url , datasetTrigger, () => setDatasetTrigger(false));
+  const dataset: any = useScrapeProduct(store, "Playstation 5" , datasetTrigger, () => setDatasetTrigger(false));
 
   useEffect(() => {
     if (triggerRaw || triggerArray || screenshotTrigger || pdfTrigger || jsonTrigger || datasetTrigger) {
@@ -86,12 +85,16 @@ const ScraperDemo = () => {
             />
           </label>
           <div className={styles.buttons}>
-            <button
-              className={styleinputbuttons}
-              onClick={() => setScreenshotTrigger()}
-            >
-              Scrape Screenshot
-            </button>
+          <button
+  className={styleinputbuttons}
+  onClick={() => {
+    setScreenshotTrigger();
+    console.log('screenshotTrigger:', screenshotTrigger);
+  }}
+>
+  Scrape Screenshot
+</button>
+
             <button
               className={styleinputbuttons}
               onClick={() => setTriggerRaw()}

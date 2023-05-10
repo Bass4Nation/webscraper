@@ -6,7 +6,7 @@ const rateLimit = require("express-rate-limit"); // Added a limiter since it wou
 const cors = require("cors"); // Added cors to allow the website to access the api.
 const puppeteer = require("puppeteer"); //
 const { title } = require("process");
-const fs = require("fs");
+const fs = require("fs"); // File system module to read files/file location etc...
 
 
 
@@ -242,15 +242,8 @@ app.get("/scrapproduct", async (req: any, res: any) => {
 
 
   try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    const userAgent = new UserAgent();
-    await page.setUserAgent(userAgent.toString());
-    // await page.goto(url);
-    await scrapFromStore(page, store, product)
+    await scrapFromStore(store, product)
     await waitTime(4); // Wrap setTimeout in a Promise. Waiting because the page needs to load before the screenshot is taken.
-    await page.screenshot({ path: `${store}after.png` });
-    await browser.close();
     res.status(200).json({ status: 'success', message: 'Scraping complete' });
   } catch (error) {
     errorcodes(error, res);
@@ -334,24 +327,29 @@ const latestScreenshot = async (folder_path: string) => {
 //  A function that scrap data from a specific store and product.
 type StoreName = "komplett" | "power" | "elkjop" | "all";
 
-const scrapFromStore = async (page: any, store: StoreName, product: string) => {
+const scrapFromStore = async ( store: StoreName, product: string) => {
   console.log("Scraping from store: " + store + " and product: " + product);
 
   const encodedProduct = encodeURIComponent(product);
 
-  const storeUrls: Record<StoreName, string> = {
-    "komplett": "https://www.komplett.no/search?q=" + encodedProduct,
-    "power": "https://www.power.no/search/?q=" + encodedProduct,
-    "elkjop": "https://www.elkjop.no/search/" + encodedProduct,
-    "all": "",
-  };
-  const searchProduct: string = storeUrls[store] || storeUrls["komplett"];
-  console.log(searchProduct);
+  // const storeUrls: Record<StoreName, string> = {
+  //   "komplett": "https://www.komplett.no/search?q=" + encodedProduct,
+  //   "power": "https://www.power.no/search/?q=" + encodedProduct,
+  //   "elkjop": "https://www.elkjop.no/search/" + encodedProduct,
+  //   "all": "",
+  // };
+  // const searchProduct: string = storeUrls[store] || storeUrls["komplett"];
+  // console.log(searchProduct);
 
   //  ----------- Handle the different stores  ----------------
   // -------------------- Power ------------------------------
-  async function handlePowerScraping(page: any) {
-    await page.goto(searchProduct, { waitUntil: 'networkidle0' });
+  async function handlePowerScraping() {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const userAgent = new UserAgent();
+    await page.setUserAgent(userAgent.toString());
+    // await page.goto(url);
+    await page.goto("https://www.power.no/search/?q=" + encodedProduct, { waitUntil: 'networkidle0' });
 
     console.log("Scraping from power");
     const acceptCookies = await page.$('button.coi-banner__accept'); // Find the accept cookies button
@@ -384,23 +382,29 @@ const scrapFromStore = async (page: any, store: StoreName, product: string) => {
     console.log('Product not found:', productToFind);
   }
     await waitTime(2);
-    await page.screenshot({ path: `power.png` });
+    await page.screenshot({ path: `./public/scraped-products/screenshots/power.png` });
+    await page.pdf({ format: 'A4', path: `./public/scraped-products/pdfs/power.pdf`, printBackground: true });
+
+    await browser.close();
     console.log("Scraping from power COMPLETE");
 
   }
 
   // -------------------- Komplett ------------------------------
-  async function handleKomplettScraping(page: any) {
+  async function handleKomplettScraping() {
     // Implementation for Komplett store
     console.log("Scraping from komplett");
-    await page.goto(searchProduct, { waitUntil: ['load', 'networkidle0'] });
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const userAgent = new UserAgent();
+    await page.setUserAgent(userAgent.toString());
+    // await page.goto(url);
+    await page.goto("https://www.komplett.no/search?q=" + encodedProduct, { waitUntil: ['load', 'networkidle0'] });
     const acceptCookies = await page.$('button.btn-large.primary'); // Find the accept cookies button
     if (acceptCookies) {
       await acceptCookies.click();
     } else { console.log("No cookies to accept"); }
-    // Find the product by its name
-    await page.screenshot({ path: `komplett.png` });
-  
+    // Find the product by its name  
     const productToFind: string = product;
     const productElement = await page.$x(`//div[contains(@class, 'name')]//h2[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), "${productToFind.toLowerCase()}")]`);
 
@@ -430,18 +434,26 @@ const scrapFromStore = async (page: any, store: StoreName, product: string) => {
     } else {
       console.log('Product not found:', productToFind);
     }
+    await page.screenshot({ path: `./public/scraped-products/screenshots/komplett.png` });
+    await page.pdf({ format: 'A4', path: `./public/scraped-products/pdfs/komplett.pdf`, printBackground: true });
 
+    await browser.close();
     console.log("Scraping from komplett COMPLETE");
 
   }
 
 
   // -------------------- Elkjop ------------------------------
-  async function handleElkjopScraping(page: any) {
+  async function handleElkjopScraping() {
     // Implementation for Elkjop store
     console.log("Scraping from elkjop");
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const userAgent = new UserAgent();
+    await page.setUserAgent(userAgent.toString());
+    // await page.goto(url);
     // await page.goto(searchProduct, {  timeout: 60000  });
-    await page.goto(searchProduct, { waitUntil: ['load', 'networkidle0'] });
+    await page.goto("https://www.elkjop.no/search/" + encodedProduct, { waitUntil: ['load', 'networkidle0'] });
     const productToFind: string = product;
   // Find the product by a partial name match
   const productElement = await page.$x(`//h2[contains(@class, 'h2 ng-star-inserted')]//a[contains(translate(text(), 'ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ', 'abcdefghijklmnopqrstuvwxyzæøå'), '${productToFind.toLowerCase()}')]`);
@@ -458,37 +470,40 @@ const scrapFromStore = async (page: any, store: StoreName, product: string) => {
   } else {
     console.log('Product not found:', productToFind);
   }
+  await page.screenshot({ path: `./public/scraped-products/screenshots/elkjop.png` });
+  await page.pdf({ format: 'A4', path: `./public/scraped-products/pdfs/elkjop.pdf`, printBackground: true });
+  await browser.close();
+  console.log("Scraping from elkjøp COMPLETE");
 
-      
   }
 
   // -----------------  All stores -----------------------------
-  async function handleAllStores(page: any) {
+  async function handleAllStores() {
     // Implementation for all stores one at a time
     console.log("Scraping from all stores");
-    await handlePowerScraping(page);
-    await handleKomplettScraping(page);
-    await handleElkjopScraping(page);
+    await handlePowerScraping();
+    await handleKomplettScraping();
+    await handleElkjopScraping();
   }
 
-  // Create a mapping from store names to their handling functions
-  const storeHandlers: Record<StoreName, (page: any) => Promise<void>> = {
-    "power": handlePowerScraping,
-    "komplett": handleKomplettScraping,
-    "elkjop": handleElkjopScraping,
-    "all": handleAllStores,
-  };
+// Create a mapping from store names to their handling functions
+const storeHandlers: Record<StoreName, () => Promise<void>> = {
+  "power": handlePowerScraping,
+  "komplett": handleKomplettScraping,
+  "elkjop": handleElkjopScraping,
+  "all": handleAllStores,
+};
 
-  // Use the storeHandlers object to call the appropriate handling function
-  const handler = storeHandlers[store];
-  if (handler) {
-    await handler(page);
-  } else {
-    console.log("No store found");
-  }
+// Use the storeHandlers object to call the appropriate handling function
+const handler = storeHandlers[store];
+if (handler) {
+  await handler(); // No 'page' argument is required now
+} else {
+  console.log("No store found");
+}
 
-  await waitTime(2);
-  await page.screenshot({ path: `${store}.png` });
+  // await waitTime(2);
+  // await page.screenshot({ path: `${store}.png` });
 
 }
 
