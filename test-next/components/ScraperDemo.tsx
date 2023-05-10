@@ -1,23 +1,22 @@
-import {
-  useScrapHTML,
-  useScrapHTMLArray,
-  useGetListScreenshotsTaken,
-  useGetLatestScreenshotsTaken,
-  useScrapPdf,
-  useScrapeJson,
-  useScrapeProduct,
-} from "../scrapers/scrapHTML"; //  Importing the webscraper framework
+
 import { useScrapScreenshot } from "@/hooks/useScrapScreenshot";
+import { useGetLatestScreenshotsTaken } from "@/hooks/useGetLatestScreenshotTaken";
+import { useGetListScreenshotsTaken } from "@/hooks/useGetListScreenshotsTaken";
+import { useScrapHTML } from "@/hooks/useScrapHTML";
+import { useScrapHTMLArray } from "@/hooks/useScrapHTMLArray";
+import { useScrapPdf } from "@/scrapers/scrapHTML";
+import { useScrapeJson } from "@/hooks/useScrapeJson";
+import { useScrapeProduct } from "@/hooks/useScrapeProduct";
 import { useState, useEffect, createElement, ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Webscraper.module.css"; //  CSS file for the webscraper
-import { useToggleState } from "@/scrapers/useToggleState";
+import { useToggleState } from "@/hooks/useToggleState";
 import React from "react";
 
 const ScraperDemo = () => {
   // This is just an example on how to use each of the hooks in my webscraper framework.
-  // The hooks are located in the helper folder.
+  // The hooks are located in the hooks folder.
   // The hooks are used to scrape data from a website and return the data in a JSON format.
   // Or to take screenshot of a website and return the screenshot in a JSON format.
   // More in depth explanation:
