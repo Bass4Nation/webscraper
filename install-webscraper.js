@@ -73,12 +73,15 @@ try {
   console.log('Installing dependencies, please wait...');
   execSync('npm install', { stdio: 'inherit' }); // Install dependencies
   execSync('npm i concurrently', { stdio: 'inherit' }); // Install concurrently
+  execSync('npm i ts-node', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support typescript natively)
+  execSync('npm i --save -dev @types/user-agents', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support typescript natively)
+  execSync('npm i --save-dev @types/cors', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support typescript natively)
   console.log('Dependencies installed successfully.');
 } catch (error) {
   console.error('Error installing dependencies:', error);
 }
 
-const foldersToCreate = ['public/scraped-json', 'public/scraped-txt', 'public/scraped-screenshots'];
+const foldersToCreate = ['public/scraped-json', 'public/scraped-txt', 'public/scraped-screenshots', 'public/scraped-pdfs', 'public/scraped-products', 'public/scraped-products/screenshots'];
 
 for (const folder of foldersToCreate) {
   const folderPath = path.join(process.cwd(), folder);

@@ -1,0 +1,333 @@
+/* This is just an example on how the webscraper can look like with basic css */
+/* You can add your own css to this file or create a new one */
+
+/* :root {
+    --font-color : blue;
+    --background-color : red;
+
+} */
+:root > .webscraper  {
+    --font-color : blue;
+    --background-color : red;
+
+}
+
+
+/* This is the container for the webscraper */
+.webscraper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--font-color);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.418);
+    border-radius: 25px;
+    padding: 10px;
+    box-shadow: 0 0 10px 0 black;
+}
+
+
+.webscraper > * {
+    margin: 20px;
+}
+
+/* This is the container for the search bar */
+.webscraper .search {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* -------------- OVERLAY INPUTFIELD ----------------- */
+.webscraper .search .overlay {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255, 255, 255);
+
+}
+
+.webscraper .search .buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.webscraper .search .disabled {
+    pointer-events: none;  /* Disable the button */
+    opacity: 0.5;
+}
+
+.webscraper .search .inputdisabled {
+    pointer-events: none;  /* Disable the button */
+    opacity: 0.5;
+    background-color: rgba(0, 0, 0, 0.377);
+}
+
+
+.webscraper label {
+    /* Remove styling from label */
+    border: none;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    overflow: visible;
+    padding: 0;
+    /* Add styling to label */
+    color: white;
+    border-radius: 25px;
+    padding: 10px;
+    transition: 0.5s;
+    box-shadow:  0 0 10px 0 black;
+    background-color: rgba(0, 0, 0, 0.377);
+    width: 100%;
+
+}
+
+.webscraper input {
+    /* Remove styling from input */
+    border: none;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    overflow: visible;
+    padding: 0;
+    /* Add styling to input */
+    background-color: var(--background-color);
+    color: white;
+    border-radius: 25px;
+    padding: 10px;
+    transition: 0.5s;
+    border: 1px solid black;
+    cursor: pointer;
+    width: 90%;
+
+}
+.webscraper input:focus {
+    background-color: rgba(0, 0, 0, 0.377);
+}
+
+
+.webscraper button {
+    /* Remove styling for button */
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    overflow: visible;
+    padding: 0;
+    /* Add styling for button */
+    color: white;
+    border-radius: 25px;
+    padding: 10px;
+    transition: 0.5s;
+    border: 1px solid black;
+    /* add a pointer */
+    cursor: pointer;
+    box-shadow:  0 0 10px 0 black;
+    background-color: rgba(0, 0, 0, 0.733);
+
+
+}
+
+.webscraper button:hover {
+    background-color: rgba(0, 0, 0, 0.644);
+    transition: 0.5s;
+}
+
+.webscraper button:active {
+    background-color: rgba(0, 0, 0, 0.829);
+    transition: 0.5s;
+}
+
+/* This is the container for the images */
+.webscraper .all_images {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-shadow:  0 0 10px 0 black;
+    border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0.377);
+
+
+}
+
+.webscraper .all_images > * {
+    margin: 10px;
+}
+
+.webscraper h2 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-shadow:  0 0 10px 0 black;
+    border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0.377);
+
+}
+
+.webscraper img {
+    width: 200px;
+    height: 200px;
+    object-fit: fill;
+    /* This is the transition for the hover effect */
+    transition: 0.5s;
+    border-radius: 25px;
+
+}
+
+.webscraper img:hover {
+    transform: scale(1.1);
+    transition: 0.5s;
+    box-shadow:  0 0 10px 0 black;
+}
+
+/* Making images smaller when click and drag */
+.webscraper img:active {
+    transform: scale(0.9);
+    transition: 0.5s;
+    box-shadow:  0 0 10px 0 black;
+}
+
+/* Container for text/data */
+
+.webscraper .data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-shadow:  0 0 10px 0 black;
+    border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0.377);
+
+}
+
+.webscraper .raw_data {
+    display: flex;
+    flex-wrap: wrap;
+    word-break: break-all;
+    width: 90%;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+/* --------------- Refresh button ----------- */
+
+.webscraper .refresh_button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    box-shadow:  0 0 10px 0 black;
+    border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0.377);
+
+}
+
+
+
+
+
+/* ----------------- WARNING OVERLAY STYLING ---------------- */
+/* A warning section that is a popup overlay  */
+.warning {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.712);
+    z-index: 100;
+}
+
+.warning > * {
+    margin: 20px;
+}
+.warning div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    box-shadow:  0 0 10px 0 black;
+    border-radius: 25px;
+    background-color: rgba(0, 0, 0, 0.76);
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.warning h2 {
+    color: white;
+    border-radius: 25px;
+    padding: 10px;
+    transition: 0.5s;
+    box-shadow:  0 0 10px 0 black;
+    background-color: rgba(0, 0, 0, 0.733);
+}
+
+.warning button {
+    /* Remove styling for button */
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    font: inherit;
+    line-height: normal;
+    overflow: visible;
+    padding: 0;
+    /* Add styling for button */
+    color: white;
+    border-radius: 25px;
+    padding: 10px;
+    transition: 0.5s;
+    border: 2px solid black;
+    /* add a pointer */
+    cursor: pointer;
+    box-shadow:  0 0 10px 0 black;
+    background-color: rgba(0, 0, 0, 0.733);
+    width: 100%;
+}
+
+.warning button:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+    transition: 0.5s;
+}
+
+/* A loading animation for loading */
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
