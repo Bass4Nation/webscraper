@@ -5,14 +5,14 @@ const { execSync } = require('child_process');
 
 // Function to copy a folder recursively
 function copyFolderSync(source, target) {
-  const targetFolder = path.join(target, path.basename(source));
-  if (!fs.existsSync(targetFolder)) {
-    fs.mkdirSync(targetFolder);
+  if (!fs.existsSync(target)) {
+    fs.mkdirSync(target, { recursive: true });
   }
 
-  for (const file of fs.readdirSync(source)) {
+  const files = fs.readdirSync(source);
+  for (const file of files) {
     const srcPath = path.join(source, file);
-    const destPath = path.join(targetFolder, file);
+    const destPath = path.join(target, file);
 
     if (fs.lstatSync(srcPath).isDirectory()) {
       copyFolderSync(srcPath, destPath);
@@ -47,7 +47,7 @@ fs.writeFileSync(targetPackageJsonPath, JSON.stringify(targetPackageJson, null, 
 
 console.log('The target project\'s package.json has been updated.');
 
-// Copy server.js from your framework to the target project's root directory
+// Copy server.js and tsconfig-webscraper.json from your framework to the target project's root directory
 const filesToCopy = [
   {
     source: path.join(__dirname, 'server.ts'),
@@ -65,11 +65,11 @@ for (const file of filesToCopy) {
 
 console.log('Copied server.js and tsconfig-webscraper.json to the target project\'s root directory.');
 
-// Copy the components, helper, styles, and hooks folders from your framework to the target project's root directory
-const foldersToCopy = ['components', 'styles', 'scrapers', 'hooks','routes'];
+// Copy the components, helper, styles, hooks, and routes folders from your framework to the target project's root directory
+const foldersToCopy = ['components', 'styles', 'scrapers', 'hooks', 'routes'];
 for (const folder of foldersToCopy) {
   const folderSourcePath = path.join(__dirname, folder);
-  const folderTargetPath = process.cwd();
+  const folderTargetPath = path.join(process.cwd(), folder);
 
   if (fs.existsSync(folderSourcePath)) {
     copyFolderSync(folderSourcePath, folderTargetPath);
@@ -84,22 +84,33 @@ try {
   console.log('Installing dependencies, please wait...');
   execSync('npm install', { stdio: 'inherit' }); // Install dependencies
   execSync('npm i concurrently', { stdio: 'inherit' }); // Install concurrently
-  execSync('npm i ts-node', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support typescript natively)
-  execSync('npm i --save -dev @types/user-agents', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support typescript natively)
-  execSync('npm i --save-dev @types/cors', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support typescript natively)
+  execSync('npm i ts-node', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support TypeScript natively)
+  execSync('npm i --save-dev @types/user-agents', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support TypeScript natively)
+  execSync('npm i --save-dev @types/cors', { stdio: 'inherit' }); // Install @types/cors for TypeScript support
   console.log('Dependencies installed successfully.');
 } catch (error) {
   console.error('Error installing dependencies:', error);
 }
 
-const foldersToCreate = ['public/scraped-json', 'public/scraped-txt', 'public/scraped-screenshots', 'public/scraped-pdfs', 'public/scraped-products', 'public/scraped-products/screenshots', 'public/scraped-products/pdfs'];
+const foldersToCreate = [
+  'public/scraped-json',
+  'public/scraped-txt',
+  'public/scraped-screenshots',
+  'public/scraped-pdfs',
+  'public/scraped-products',
+  'public/scraped-products/screenshots',
+  'public/scraped-products/pdfs'
+];
 
 for (const folder of foldersToCreate) {
   const folderPath = path.join(process.cwd(), folder);
   if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(folderPath, { recursive: true });
-    console.log(`Created ${folder} folder in the target project.`);
+    console.log(`Created ${ folder } folder in the target project.`);
   } else {
-    console.log(`${folder} folder already exists in the target project.`);
+    console.log(`${ folder } folder already exists in the target project.`);
   }
 }
+
+
+  
