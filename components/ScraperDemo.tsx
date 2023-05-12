@@ -1,23 +1,22 @@
-import {
-  useScrapHTML,
-  useScrapHTMLArray,
-  useScrapScreenshot,
-  useGetListScreenshotsTaken,
-  useGetLatestScreenshotsTaken,
-  useScrapPdf,
-  useScrapeJson,
-  useScrapeProduct,
-} from "../scrapers/scrapHTML"; //  Importing the webscraper framework
+
+import { useScrapScreenshot } from "@/hooks/useScrapScreenshot";
+import { useGetLatestScreenshotsTaken } from "@/hooks/useGetLatestScreenshotTaken";
+import { useGetListScreenshotsTaken } from "@/hooks/useGetListScreenshotsTaken";
+import { useScrapHTML } from "@/hooks/useScrapHTML";
+import { useScrapHTMLArray } from "@/hooks/useScrapHTMLArray";
+import { useScrapPdf } from "@/scrapers/scrapHTML";
+import { useScrapeJson } from "@/hooks/useScrapeJson";
+import { useScrapeProduct } from "@/hooks/useScrapeProduct";
 import { useState, useEffect, createElement, ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "../styles/Webscraper.module.css"; //  CSS file for the webscraper
-import { useToggleState } from "@/scrapers/useToggleState";
+import { useToggleState } from "@/hooks/useToggleState";
 import React from "react";
 
 const ScraperDemo = () => {
   // This is just an example on how to use each of the hooks in my webscraper framework.
-  // The hooks are located in the helper folder.
+  // The hooks are located in the hooks folder.
   // The hooks are used to scrape data from a website and return the data in a JSON format.
   // Or to take screenshot of a website and return the screenshot in a JSON format.
   // More in depth explanation:
@@ -39,7 +38,6 @@ const ScraperDemo = () => {
 
   // -------------- Hooks  --------------
 
-  // This is in use and working
   const screenshotUrl: any = useScrapScreenshot(url, screenshotTrigger, () =>
     setScreenshotTrigger(false)
   );
@@ -54,7 +52,7 @@ const ScraperDemo = () => {
   const pdf: any = useScrapPdf(url, pdfTrigger, () => setPdfTrigger(false));
   const json: any = useScrapeJson(url, jsonTrigger, () => setJsonTrigger(false));
   // const dataset: any = useScrapeProduct(store,encodeURIComponent("Playstation 5"), datasetTrigger, () => setDatasetTrigger(false));
-  const dataset: any = useScrapeProduct(store, url , datasetTrigger, () => setDatasetTrigger(false));
+  const dataset: any = useScrapeProduct(store, "Playstation 5" , datasetTrigger, () => setDatasetTrigger(false));
 
   useEffect(() => {
     if (triggerRaw || triggerArray || screenshotTrigger || pdfTrigger || jsonTrigger || datasetTrigger) {
@@ -86,12 +84,16 @@ const ScraperDemo = () => {
             />
           </label>
           <div className={styles.buttons}>
-            <button
-              className={styleinputbuttons}
-              onClick={() => setScreenshotTrigger()}
-            >
-              Scrape Screenshot
-            </button>
+          <button
+  className={styleinputbuttons}
+  onClick={() => {
+    setScreenshotTrigger();
+    console.log('screenshotTrigger:', screenshotTrigger);
+  }}
+>
+  Scrape Screenshot
+</button>
+
             <button
               className={styleinputbuttons}
               onClick={() => setTriggerRaw()}
@@ -130,6 +132,7 @@ const ScraperDemo = () => {
         <button onClick={() => handleButtonStoreClick("komplett")} >Get data From Komplett</button>
         <button onClick={() => handleButtonStoreClick("elkjop")}>Get data From Elkjøp</button>
         <button onClick={() => handleButtonStoreClick("power")}>Get data From Power</button>
+        <button onClick={() => handleButtonStoreClick("all")}>Get data from all above</button>
       </div>
     )
   };
