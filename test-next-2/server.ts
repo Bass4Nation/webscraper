@@ -1,3 +1,4 @@
+// ----------------- Imports ----------------- //
 import UserAgent from "user-agents";
 import express from "express"; // Added express to create the server.
 import axios from "axios"; // Added axios to scrape the website.
@@ -6,7 +7,15 @@ import rateLimit from "express-rate-limit"; // Added a limiter since it would no
 import cors from "cors"; // Added cors to allow the website to access the api.
 import puppeteer from "puppeteer"; //
 import fs from "fs"; // File system module to read files/file location etc...
-const { title } = require("process");
+import { title } from "process";
+// -------------- Routes imports --------------- //
+import scrape from "./routes/scrape";
+import scrapeh1 from "./routes/scrapeh1";
+import scrapearray from "./routes/scrapearray";
+import scrapejson from "./routes/scrapejson";
+import scrapescreenshot from "./routes/scrapescreenshot";
+import scrapepdf from "./routes/scrapepdf";
+
 
 
 
@@ -39,22 +48,7 @@ app.use(cors()); // Added cors to allow the website to access the api.
 app.use("/scrape", limiter); // Apply rate limiter to the /scrape endpoint
 // Added a limiter since it would not stop scraping the website. So a limiter was added to stop the scraping.
 
-app.get("/scrape", async (req: any, res: any) => {
-  const url = req.query.url;
-
-  try {
-    const response = await axios.get(url);
-    const body = response.data;
-    const $ = cheerio.load(body);
-    const html = $("*"); // Changed the * to div etc.... to only scrape the div tags.
-    console.log(html.text()); // Logging the html text to the console. Logging what is being scraped to console.
-
-    res.send(html.text());
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error occurred while scraping the website");
-  }
-});
+app.use("/scrape", scrape);
 
 app.get("/scrapeh1", async (req: any, res: any) => {
   const url = req.query.url;

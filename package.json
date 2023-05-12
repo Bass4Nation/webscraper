@@ -5,7 +5,7 @@
   "main": "server",
   "scripts": {
     "test": "jest --detectOpenHandles",
-    "start-server": "ts-node server.ts",
+    "start-server": "ts-node -P tsconfig-webscraper.json server.ts",
     "start-client": "next dev",
     "dev": "concurrently \"npm run start-server\" \"npm run start-client\"",
     "build": "next build",
