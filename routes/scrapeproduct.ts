@@ -5,9 +5,17 @@ import { errorcodes } from "./utils/helper";
 import { scrapFromStore } from "./utils/helper";
 import { waitTime } from "./utils/helper";
 
+/**
+ * For scraping a product from several stores
+ * Komplett.no - NOT WORKING (This got blocked by Komplett.no)
+ * POWER.no - WORKING
+ * ELKJOP.no - WORKING
+ */
+
+
 const app = express();
 
-app.get("/", async (req: any, res: any) => {
+app.get("/scrapproduct", async (req: any, res: any) => {
     console.log("GET /scrapproduct called with query: ", req.query);
   
     const store: any = req.query.url;

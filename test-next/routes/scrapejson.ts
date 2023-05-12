@@ -7,7 +7,7 @@ import { titleFromURL } from "./utils/helper";
 
 const app = express();
 
-app.get("/", async (req: any, res: any) => {
+app.get("/scrapejson", async (req: any, res: any) => {
     const url = req.query.url;
     try {
       const response = await axios.get(url);

@@ -4,7 +4,7 @@ import cheerio from "cheerio";
 import { errorcodes } from "./utils/helper";
 const app = express();
 
-app.get("/", async (req: Request, res: Response) => {
+app.get("/scrapearray", async (req: Request, res: Response) => {
 
     const url = req.query.url?.toString(); // Cast url to string
 

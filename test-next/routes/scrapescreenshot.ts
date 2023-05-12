@@ -7,7 +7,7 @@ import { titleFromURL } from "./utils/helper";
 import puppeteer from "puppeteer";
 const app = express();
 
-app.get("/", async (req: any, res: any) => {
+app.get("/scrapescreenshot", async (req: any, res: any) => {
     // public/scraped-screenshots/
   
     const url = req.query.url;

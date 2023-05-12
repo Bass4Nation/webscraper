@@ -4,7 +4,7 @@ import cheerio from "cheerio";
 import { errorcodes } from "./utils/helper";
 const app = express();
 
-app.get("/", async (req: any, res: any) => {
+app.get("/scrapeh1", async (req: any, res: any) => {
     const url = req.query.url;
 
     try {

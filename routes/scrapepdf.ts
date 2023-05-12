@@ -8,7 +8,7 @@ import puppeteer from "puppeteer";
 
 const app = express();
 
-app.get("/", async (req: any, res: any) => {
+app.get("/scrapepdf", async (req: any, res: any) => {
     // public/scraped-pdfs/
   
     const url = req.query.url;
