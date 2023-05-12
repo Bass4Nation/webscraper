@@ -1,2 +1,11 @@
 node_modules
 delete
+
+
+# All files in test-next public folder taken by the webscraper
+test-next/public/scraped-json/*
+test-next/public/scraped-pdfs/*
+test-next/public/scraped-products/pdfs/*
+test-next/public/scraped-products/screenshots/*
+test-next/public/scraped-screenshots/*
+test-next/public/scraped-txt/*

@@ -4,7 +4,7 @@ import cheerio from "cheerio";
 
 const app = express();
 
-app.get("/scrape", async (req: Request, res: Response) => {
+app.get("/", async (req: Request, res: Response) => {
   const url: string = req.query.url as string;
     
   try {
