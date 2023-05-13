@@ -5,6 +5,11 @@ import { latestScreenshot } from "./utils/helper";
 import { errorcodes } from "./utils/helper";
 import { screenshotList } from "./utils/helper";
 
+/**
+ * Finding all screenshots taken on the server.
+ * @returns a list of all screenshots taken on the server. 
+ */
+
 const app = express();
 
 app.get("/scrapescreenshotlist", async (req: any, res: any) => {

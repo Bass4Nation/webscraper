@@ -18,6 +18,13 @@ import scrapepdf from "./routes/scrapepdf";
 import latestscreenshottaken from "./routes/lastscreenshottaken";
 import scrapeproduct from "./routes/scrapeproduct";
 
+/**
+ * This is the main file for the webscraper API. 
+ * This file is where the server is created and the routes are imported.
+ * The server is created with express and the routes are imported from the routes folder.
+ * This is premade for the webscraper framework. And should be used as a template for future projects or as an example on how this is used.
+ */
+
 
 
 

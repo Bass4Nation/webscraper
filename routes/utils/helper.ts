@@ -9,7 +9,14 @@ import fs from "fs"; // File system module to read files/file location etc...
 import { title } from "process";
 
 
-
+/**
+ * 
+ * @param savepath  The path to where the file should be saved
+ * @param filename  The name of the file
+ * @param fileformat  The format of the file
+ * @param data  The data to be saved
+ * @param res  The response object
+ */
 export async function fileWriterScrappedData(savepath: string, filename: string, fileformat: string, data: any, res: any) {
     console.log("Writing file" + filename + fileformat);
     try {
@@ -30,6 +37,11 @@ export async function fileWriterScrappedData(savepath: string, filename: string,
 // A function that convert link to this format : www_komplett_no_2023327164050
 // Remove http: or https: and replace all special characters with _
 // Fine for now. Can be used as name for files saved on server.
+/**
+ * 
+ * @param url The url to be converted
+ * @returns The converted url
+ */
 export async function titleFromURL(url: string) {
     const date = new Date();
     // Get timestamp from 1970-01-01 00:00:00
@@ -45,6 +57,11 @@ export async function titleFromURL(url: string) {
 }
 
 //  A function that returns a list of all files in a folder with path to the file.
+/**
+ * 
+ * @param folder_path The path to the folder
+ * @returns An array with all files in the folder
+ */
 export const screenshotList = async (folder_path: string) => {
     const fs = require("fs"); // File system module to read files
     const path = require("path"); // Path to file system folder and files in folder
@@ -65,6 +82,11 @@ export const screenshotList = async (folder_path: string) => {
 };
 
 // A function that returns the latest screenshot taken.
+/**
+ * 
+ * @param folder_path The path to the folder
+ * @returns  The latest screenshot taken
+ */
 export const latestScreenshot = async (folder_path: string) => {
     const allfiles = await screenshotList(folder_path); // Get all files in folder
     let latestFile = null; // Create a variable to store the latest file
@@ -85,7 +107,11 @@ export const latestScreenshot = async (folder_path: string) => {
 // ----------------------------- -------------------------------
 //  A function that scrap data from a specific store and product.
 type StoreName = "komplett" | "power" | "elkjop" | "all";
-
+/**
+ * 
+ * @param store  The store to scrap from - one of the following: "komplett", "power", "elkjop" or "all"
+ * @param product  The product to scrap - a string - example: "playstation 5"
+ */
 export const scrapFromStore = async (store: StoreName, product: string) => {
     console.log("Scraping from store: " + store + " and product: " + product);
 
@@ -268,6 +294,11 @@ export const scrapFromStore = async (store: StoreName, product: string) => {
 
 
 // A function that extracts the timestamp from the filename.
+/**
+ * 
+ * @param filename - The filename to extract the timestamp from
+ * @returns  The timestamp as a number
+ */
 export function extractNumber(filename: string) {
     const regex = /.*-(\d+)\./;
     const result = filename.match(regex);
@@ -280,6 +311,10 @@ export function extractNumber(filename: string) {
 }
 
 // A function that returns a promise that resolves after a given time.
+/**
+ * 
+ * @param time - The time to wait in seconds before resolving the promise
+ */
 export const waitTime = async (time: number) => {
     return new Promise((resolve) => {
         setTimeout(resolve, time * 1000);
@@ -288,6 +323,11 @@ export const waitTime = async (time: number) => {
 
 
 // Error codes simplified
+/**
+ * 
+ * @param error - The error that occurred while scraping the website
+ * @param code - The error code to send back to the client
+ */
 export const errorcodes = (error: any, code: any) => {
     console.error(error);
     code.status(500).send("Error occurred while scraping the website");

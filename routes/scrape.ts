@@ -2,6 +2,12 @@ import express, { Request, Response } from "express";
 import axios from "axios";
 import cheerio from "cheerio";
 
+/**
+ * Scrape the website
+ * @param url - The url of the website to scrape
+ * @returns The scraped website in raw text format
+ */
+
 const app = express();
 
 app.get("/", async (req: Request, res: Response) => {

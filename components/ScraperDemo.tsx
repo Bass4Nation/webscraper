@@ -14,6 +14,12 @@ import styles from "../styles/Webscraper.module.css"; //  CSS file for the websc
 import { useToggleState } from "@/hooks/useToggleState";
 import React from "react";
 
+/**
+ * 
+ * @returns - A demo of how to use the webscraper framework. This is just an example on how to use each of the hooks in my webscraper framework that is connected to the backend API.
+ * The hooks are located in the hooks folder. The hooks are used to scrape data from a website and return the data in a JSON format. Or to take screenshot of a website and return the screenshot in a JSON format etc.
+ */
+
 const ScraperDemo = () => {
   // This is just an example on how to use each of the hooks in my webscraper framework.
   // The hooks are located in the hooks folder.

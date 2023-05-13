@@ -6,6 +6,14 @@ import { waitTime } from "./utils/helper";
 import { titleFromURL } from "./utils/helper";
 import puppeteer from "puppeteer";
 
+/**
+ * Scrape the website and return pdf path.
+ * @param url - The url of the website to scrape
+ * @returns The scraped website in pdf format - filepath on the server.
+ * @ps - The pdf is saved in the public/scraped-pdfs folder.
+ * @warning - CAN NOT RETURN THE PDF FILE TO THE CLIENT. THE CLIENT HAS TO DOWNLOAD THE FILE FROM THE SERVER.
+ */
+
 const app = express();
 
 app.get("/scrapepdf", async (req: any, res: any) => {

@@ -7,9 +7,12 @@ import { waitTime } from "./utils/helper";
 
 /**
  * For scraping a product from several stores
- * Komplett.no - NOT WORKING (This got blocked by Komplett.no)
- * POWER.no - WORKING
- * ELKJOP.no - WORKING
+ * @param store name - komplett, power, elkjop or all
+ * @param product - The product to scrape
+ * @return nothing yet. Will return a json object with data/filepath of screenshot and pdf.
+ * @Komplett - NOT WORKING (This got blocked by Komplett.no)
+ * @POWER - WORKING
+ * @ELKJOP - WORKING
  */
 
 

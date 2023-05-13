@@ -5,6 +5,13 @@ import { errorcodes } from "./utils/helper";
 import { waitTime } from "./utils/helper";
 import { titleFromURL } from "./utils/helper";
 import puppeteer from "puppeteer";
+
+/**
+ * Scraping a screenshot from a website
+ * @param url - The url of the website to scrape
+ * @returns the filepath of the screenshot
+ */
+
 const app = express();
 
 app.get("/scrapescreenshot", async (req: any, res: any) => {

@@ -5,6 +5,12 @@ import { errorcodes } from "./utils/helper";
 import { fileWriterScrappedData } from "./utils/helper";
 import { titleFromURL } from "./utils/helper";
 
+/**
+ * Scrape the website in json format
+ * @param url - The url of the website to scrape
+ * @returns The scraped website in json format with tags and content.
+ */
+
 const app = express();
 
 app.get("/scrapejson", async (req: any, res: any) => {

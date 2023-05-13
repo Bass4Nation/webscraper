@@ -2,13 +2,23 @@ import express, { Request, Response } from "express";
 import axios from "axios";
 import cheerio from "cheerio";
 import { errorcodes } from "./utils/helper";
+
+/**
+ * Scrape the website
+ * @param url - The url of the website to scrape
+ * @returns The scraped website in array format with tags and content.
+ *  User can use this to create a website with the same tags and content.
+ * */
 const app = express();
 
 app.get("/scrapearray", async (req: Request, res: Response) => {
-
     const url = req.query.url?.toString(); // Cast url to string
 
     try {
+        if (!url) {
+            throw new Error("URL is not defined");
+        }
+
         const response = await axios.get(url);
         const body = response.data;
         const $ = cheerio.load(body);
@@ -31,7 +41,5 @@ app.get("/scrapearray", async (req: Request, res: Response) => {
         errorcodes(error, res);
     }
 });
-
-
 
 export default app;
