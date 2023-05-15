@@ -1,16 +1,26 @@
-// server.test.ts
+import { startServer, stopServer } from './serverInstance';
 import request from 'supertest';
-import { startServer, stopServer } from './server'; 
-
-let app: any;
+import app from './server';
 
 describe('Server - scraping data - MUST HAVE INTERNET', () => {
-  beforeAll(async () => {
-    app = await startServer();
-  });
+  // beforeAll(async () => {
+  //   app = await startServer();
+  // });
 
-  afterAll(async () => {
-    await stopServer();
+  // afterAll(async () => {
+  //   await stopServer();
+  // });
+
+  // afterAll((done) => {
+  //   server.close(done);
+  // });
+
+  beforeAll((done) => {
+    startServer(done);
+  });
+  
+  afterAll((done) => {
+    stopServer(done);
   });
 
   it('should be able to reach the /scrape endpoint', async () => {

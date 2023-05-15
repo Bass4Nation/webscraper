@@ -80,17 +80,26 @@ for (const folder of foldersToCopy) {
 }
 
 // Install all dependencies
+// try {
+//   console.log('Installing dependencies, please wait...');
+//   execSync('npm i', { stdio: 'inherit' }); // Install dependencies
+//   execSync('npm i concurrently', { stdio: 'inherit' }); // Install concurrently
+//   execSync('npm i ts-node', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support TypeScript natively)
+//   execSync('npm i --save-dev @types/user-agents', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support TypeScript natively)
+//   execSync('npm i --save-dev @types/cors', { stdio: 'inherit' }); // Install @types/cors for TypeScript support
+//   console.log('Dependencies installed successfully.');
+// } catch (error) {
+//   console.error('Error installing dependencies:', error);
+// }
+
 try {
   console.log('Installing dependencies, please wait...');
-  execSync('npm install', { stdio: 'inherit' }); // Install dependencies
-  execSync('npm i concurrently', { stdio: 'inherit' }); // Install concurrently
-  execSync('npm i ts-node', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support TypeScript natively)
-  execSync('npm i --save-dev @types/user-agents', { stdio: 'inherit' }); // Install ts-node for running server.ts (node doesn't support TypeScript natively)
-  execSync('npm i --save-dev @types/cors', { stdio: 'inherit' }); // Install @types/cors for TypeScript support
+  execSync('npm i concurrently ts-node --save && npm i --save-dev @types/user-agents @types/cors', { stdio: 'inherit' }); // Install dependencies and devDependencies
   console.log('Dependencies installed successfully.');
 } catch (error) {
   console.error('Error installing dependencies:', error);
 }
+
 
 const foldersToCreate = [
   'public/scraped-json',
