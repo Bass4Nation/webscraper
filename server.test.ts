@@ -3,17 +3,6 @@ import request from 'supertest';
 import app from './server';
 
 describe('Server - scraping data - MUST HAVE INTERNET', () => {
-  // beforeAll(async () => {
-  //   app = await startServer();
-  // });
-
-  // afterAll(async () => {
-  //   await stopServer();
-  // });
-
-  // afterAll((done) => {
-  //   server.close(done);
-  // });
 
   beforeAll((done) => {
     startServer(done);
@@ -46,6 +35,22 @@ describe('Server - scraping data - MUST HAVE INTERNET', () => {
     expect(response.body).toHaveProperty('filePath');
     expect(response.body).toHaveProperty('filename');
   }, 10000);
+
+  // it('should be able to reach the /scrapeh1 endpoint', async () => {
+  //   const url = 'http://example.com'; 
+  //   const response = await request(app).get(`/scrapeh1?url=${encodeURIComponent(url)}`);
+  //   expect(response.status).toBe(200);
+  //   expect(response.body).toEqual({ status: 'success', message: 'Scraping complete' });
+  // }
+  // );
+
+  it('should be able to reach the /scrapearray endpoint', async () => {
+    const url = 'http://example.com'; 
+    const response = await request(app).get(`/scrapearray?url=${encodeURIComponent(url)}`);
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ status: 'success', message: 'Scraping complete' });
+  }
+  );
 });
 
 
