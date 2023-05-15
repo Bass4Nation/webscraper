@@ -1,5 +1,6 @@
 // ----------------- Imports ----------------- //
 import UserAgent from "user-agents";
+import http from 'http';
 import express from "express"; // Added express to create the server.
 import axios from "axios"; // Added axios to scrape the website.
 import cheerio from "cheerio"; // Added cheerio to scrape the website.
@@ -31,19 +32,35 @@ import scrapeproduct from "./routes/scrapeproduct";
 const app = express(); // Added express to create the server.
 const PORT = process.env.PORT || 3002; // Changed the port to 3000 since 8080 was already in use.
 
+let server: http.Server;
+
 // ----------------- Start the server ----------------- //
 // app.listen(PORT, () => {
 //   console.log(`Server is running on port ${PORT}`);
 // });
 
-const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// const server = app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
+
+export async function startServer() {
+  server = app.listen(3000);
+  return server;
+}
+
+export async function stopServer(): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    server.close((err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+}
 
 
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 10, // Limit each IP to 10 requests per windowMs
+  max: 2, // Limit each IP to 10 requests per windowMs
   message: "Too many requests, please try again later.",
 });
 

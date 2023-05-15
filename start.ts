@@ -1,8 +1,7 @@
 // start.ts
-import app from "./server";
+import app from './server'; // replace with the path to server.ts
 
-const PORT = process.env.PORT || 3002;
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });

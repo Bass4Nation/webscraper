@@ -17,7 +17,7 @@ app.get("/", async (req: Request, res: Response) => {
     const body = response.data;
     const $ = cheerio.load(body);
     const html = $("*");
-    console.log(html.text());
+    // console.log(html.text());
 
     res.send(html.text());
   } catch (error) {
