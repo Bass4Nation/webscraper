@@ -2,7 +2,7 @@ import { startServer, stopServer } from './serverInstance';
 import request from 'supertest';
 import app from './server';
 
-describe('Server - scraping data - MUST HAVE INTERNET', () => {
+describe('Server - scraping data - MUST HAVE INTERNET - This may take a while since it will use the internet at the endpoints', () => {
 
   beforeAll((done) => {
     startServer(done);
@@ -44,13 +44,15 @@ describe('Server - scraping data - MUST HAVE INTERNET', () => {
   // }
   // );
 
-  it('should be able to reach the /scrapearray endpoint', async () => {
+  it('should be able to reach the /scrapearray endpoint - expecting return array', async () => {
     const url = 'http://example.com'; 
     const response = await request(app).get(`/scrapearray?url=${encodeURIComponent(url)}`);
+  
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({ status: 'success', message: 'Scraping complete' });
-  }
-  );
+    expect(Array.isArray(response.body)).toBeTruthy(); // Check if the response is an array
+    expect(response.body[0]).toHaveProperty('content'); // Check if the first item in the array has a 'content' property
+    expect(response.body[0]).toHaveProperty('tag'); // Check if the first item in the array has a 'tag' property
+  });
 });
 
 
