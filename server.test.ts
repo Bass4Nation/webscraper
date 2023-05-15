@@ -4,7 +4,7 @@ import { startServer, stopServer } from './server';
 
 let app: any;
 
-describe('Server', () => {
+describe('Server - scraping data - MUST HAVE INTERNET', () => {
   beforeAll(async () => {
     app = await startServer();
   });
@@ -27,7 +27,7 @@ describe('Server', () => {
     expect(response.body).toEqual({ status: 'success', message: 'Scraping complete' });
   });
 
-  it('scrapes a webpage and creates a screenshot', async () => {
+  it('scrapes a webpage and creates a screenshot. Max timelimit at 10 sec', async () => {
     const url = 'https://b4n.no/'; 
     const response = await request(app).get(`/scrapescreenshot?url=${encodeURIComponent(url)}`);
     expect(response.status).toBe(200);
@@ -35,7 +35,7 @@ describe('Server', () => {
     expect(response.body).toHaveProperty('message', 'Screenshot created successfully');
     expect(response.body).toHaveProperty('filePath');
     expect(response.body).toHaveProperty('filename');
-  });
+  }, 10000);
 });
 
 

@@ -9,3 +9,14 @@ test-next/public/scraped-products/pdfs/*
 test-next/public/scraped-products/screenshots/*
 test-next/public/scraped-screenshots/*
 test-next/public/scraped-txt/*
+
+
+# All files in public for scraped data - Dont need to be uploaded to github.
+public/scraped-json/*
+public/scraped-pdfs/*
+public/scraped-products/pdfs/*
+public/scraped-products/screenshots/*
+public/scraped-screenshots/*
+public/scraped-txt/*
+
+
