@@ -44,11 +44,20 @@ if (process.env.NODE_ENV !== 'test') {
     console.log(`Server is running on port ${PORT}`);
   });
 }
+
+/**
+ * A function to start the server. This is used in the test file to start the server before the tests are run.
+ * @returns server
+ */
 export async function startServer() {
   server = app.listen(3000);
   return server;
 }
 
+/**
+ * A function to stop the server. This is used in the test file to stop the server after the tests are run.
+ * @returns server
+ */
 export async function stopServer(): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     server.close((err) => {
