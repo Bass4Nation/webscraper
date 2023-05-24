@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
 
+
+/**
+ * 
+ * @param url  - The url to the website that will be scraped.
+ * @param trigger  - A boolean that will trigger the scraping. 
+ * @param onCompletion - A function that will be called when the scraping is done.
+ * @returns  a string with the scraped html in raw data form.
+ */
 export const useScrapHTML = (
     url: string,
     trigger: boolean,

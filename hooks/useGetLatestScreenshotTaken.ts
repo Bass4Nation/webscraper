@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
 
+/**
+ * 
+ * @returns a string with the latest screenshot taken.
+ */
 export const useGetLatestScreenshotsTaken = () => {
     const serverUrl = serverCommand("lastscreenshottaken"); // url to the server that will take screenshot of requested page.
   
