@@ -2,7 +2,13 @@ import { useState, useEffect } from 'react';
 import axios from "axios";
 
 
-
+/**
+ * 
+ * @param url - url to the server that will take screenshot of requested page.
+ * @param trigger - boolean that triggers the effect.
+ * @param onCompletion - function to be executed when the effect is completed.
+ * @returns - a string with the latest screenshot taken.
+ */
 export const useScrapeJson = (url: string, trigger: boolean, onCompletion: () => void) => {
   const serverUrl = serverCommand("scrapejson");
 

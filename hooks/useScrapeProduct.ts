@@ -3,6 +3,13 @@ import axios from "axios";
 
 // ------- Scrape a product from a store like Komplett, Elkjøp, etc. -------
 // Need to get storename and a product name to search for.
+/**
+ * 
+ * @param store  - store name like Komplett, Elkjøp, etc. Must be a valid store name.
+ * @param product  - product name to search for. Must be a valid product name.
+ * @param trigger - boolean to trigger the scrape. Must be true to trigger.
+ * @param onCompletion - callback function to be called when the scrape is completed.
+ */
 export const useScrapeProduct = (store: string, product: string, trigger: boolean, onCompletion: () => void) => {
     console.log("useScrapeProduct", store, product);
     const storeChosen: string = store;
