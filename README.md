@@ -15,6 +15,8 @@ It is not permitted to use on webpages that are not allowing webscraping. This c
   - [Additional notes](#additional-notes)
     - [Where to find the framework after downloading to your project?](#where-to-find-the-framework-after-downloading-to-your-project)
     - [What happens when running `npx install-webscraper`?](#what-happens-when-running-npx-install-webscraper)
+    - [How to run just the website or just the server?](#how-to-run-just-the-website-or-just-the-server)
+    - [How to run the test enviroment?](#how-to-run-the-test-enviroment)
     - [Yet to be implemented](#yet-to-be-implemented)
 
 ## Framework Structure
@@ -29,7 +31,7 @@ This framework has the following structure from the git repo, before installatio
 - `server.test.ts` - Where the test enviroment is located
 - `install-webscraper.js` - Is the script that is adding this framework to the developers project.
 - `README.md` - Is this current file/ containing getting started/ installation etc...
-- README.pdf - PDF version of README.md
+- ``README.pdf`` - PDF version of README.md
 
 
 ## Getting Started
@@ -40,8 +42,8 @@ This installation guide is for after the user has created a React or Next.js pro
 - [Git](https://git-scm.com/downloads) -  Otherwise all commands may not work. This is also for making it easier to pull data from my github repository since the web scraper framework is installed in a similar way as React or Next.js framework.
 - To check if both is installed open a terminal/cmd/powershell and type `git -v` and `node -v` and the result of each command should be what version you have installed
 ### Installation of the framework
-1. Run `npm install Bass4Nation/webscraper` in the project directory for downloading and installation some of the elements used. This will download the framework from my github.
-2. Run `npx install-webscraper` this will merge package.json with webscrapers package.json. Whis will also copy and make folders needed for the webscraper to work. This is the install-webscraper.js file.
+1. Run `npm i Bass4Nation/webscraper` in the project directory for downloading the framework from my github.
+2. Run `npx install-webscraper` this will merge package.json with webscrapers package.json. Whis will also copy and make folders needed for the webscraper to work. This is the install-webscraper.js file. Installation similar to React or Next.js.
 3. Check out [How to run the the demo for the webscraper](#how-to-run-the-demo-for-the-webscraper) if you want examples on how to use this framework.
 
 ## How to run the demo for the webscraper
@@ -49,7 +51,7 @@ The demo is just an example on how to use the framework, and can be a help on ho
 ### As a new project
 
 This is how I would done it at a start next js project. (ps: This is just a example on where to place the demo)
-1. In pages/index.tsx.
+1. In ``pages/index.tsx``.
     1. `import "ScraperResult" from '@/components/ScraperResult.tsx' `
     2. Add `<ScraperDemo />` somewhere in the frontend in the file. (Must be in the front end web part of the project.)
     3. In terminal type ``npm run dev``
@@ -57,7 +59,7 @@ This is how I would done it at a start next js project. (ps: This is just a exam
     5. Just copy a url from any pages. Ex: https://b4n.no/ it is okey to use since it is my portfolio page and I allow the use of a scraper on that page.
 
 ### Use the existing test project in github repository.
-This was used for developing this framework and is made for easy test of this framework. Will make sure it has the latest version of the framework.
+This was used for developing this framework and is made for easy test of this framework. I will make sure it has the latest version of the framework.
 1. Clone the project from github instead of using npm install. 
    1. [https://github.com/Bass4Nation/webscraper](https://github.com/Bass4Nation/webscraper) - Webscraper's Github repository that would be needed to for cloning
 2. In a terminal navigate to `test-next` folder.
@@ -82,6 +84,12 @@ All packages/frameworks will be installed in `node_modules/` folder and will be 
 
 ### What happens when running `npx install-webscraper`?
 It will copy all files that are required for the framework from `node_modules/webscraper` to root level of your project and also create all folders needed for the existing webscraper framework. Also merging this framework's package.json with the projects current package
+
+### How to run just the website or just the server?
+For running just the website run `npm run start-client` and for just the server run `npm run start-server`. This is just for testing purposes and not for production.
+
+### How to run the test enviroment?
+1. Run `npm test` in the root folder of the project. This will start the test enviroment. This test are just for testing the framework and not for testing the developer's code. When installing the framework this test enviroment will not be installed. This is just for testing the framework itself in the Github repository. 
 
 ### Yet to be implemented
 1. Arrange the scraped data in a more readable format.
