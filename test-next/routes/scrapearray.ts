@@ -34,8 +34,6 @@ app.get("/scrapearray", async (req: Request, res: Response) => {
         };
 
         const elements = $("body > *").toArray().map((element: any) => createObject($(element)));
-        console.log(elements); // Logging the html text to the console. Logging what is being scraped to console.
-
         res.json(elements);
     } catch (error) {
         errorcodes(error, res);

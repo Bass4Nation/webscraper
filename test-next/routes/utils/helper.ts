@@ -32,6 +32,7 @@ export async function fileWriterScrappedData(savepath: string, filename: string,
     }
 }
 
+
 // A function that convert link to this format : www_komplett_no_2023327164050
 // Remove http: or https: and replace all special characters with _
 // Fine for now. Can be used as name for files saved on server.
@@ -114,15 +115,6 @@ export const scrapFromStore = async (store: StoreName, product: string) => {
     console.log("Scraping from store: " + store + " and product: " + product);
 
     const encodedProduct = encodeURIComponent(product);
-
-    // const storeUrls: Record<StoreName, string> = {
-    //   "komplett": "https://www.komplett.no/search?q=" + encodedProduct,
-    //   "power": "https://www.power.no/search/?q=" + encodedProduct,
-    //   "elkjop": "https://www.elkjop.no/search/" + encodedProduct,
-    //   "all": "",
-    // };
-    // const searchProduct: string = storeUrls[store] || storeUrls["komplett"];
-    // console.log(searchProduct);
 
     //  ----------- Handle the different stores  ----------------
     // -------------------- Power ------------------------------
@@ -284,9 +276,6 @@ export const scrapFromStore = async (store: StoreName, product: string) => {
     } else {
         console.log("No store found");
     }
-
-    // await waitTime(2);
-    // await page.screenshot({ path: `${store}.png` });
 
 }
 

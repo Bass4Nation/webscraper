@@ -66,7 +66,7 @@ for (const file of filesToCopy) {
 console.log('Copied server.js and tsconfig-webscraper.json to the target project\'s root directory.');
 
 // Copy the components, helper, styles, hooks, and routes folders from your framework to the target project's root directory
-const foldersToCopy = ['components', 'styles', 'scrapers', 'hooks', 'routes'];
+const foldersToCopy = ['components', 'styles', 'hooks', 'routes'];
 for (const folder of foldersToCopy) {
   const folderSourcePath = path.join(__dirname, folder);
   const folderTargetPath = path.join(process.cwd(), folder);

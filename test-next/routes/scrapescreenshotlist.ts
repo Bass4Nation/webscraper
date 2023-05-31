@@ -1,7 +1,4 @@
 import express, { Request, Response } from "express";
-// import axios from "axios";
-// import cheerio from "cheerio";
-import { latestScreenshot } from "./utils/helper";
 import { errorcodes } from "./utils/helper";
 import { screenshotList } from "./utils/helper";
 
@@ -12,10 +9,10 @@ import { screenshotList } from "./utils/helper";
 
 const app = express();
 
-app.get("/scrapescreenshotlist", async (req: Request, res: Response) => {
+app.get("/scrapescreenshotlist", async (req: any, res: any) => {
     // Path to folder where screenshots is placed from standpoint to the server
     //  ./public/scraped-screenshots/......
-    console.log("Finding all screenshots taken on the server.");
+    console.log("scrapescreenshotlist.ts: " );
     
     const folder_path = "./public/scraped-screenshots";
     try {

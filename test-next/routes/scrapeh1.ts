@@ -21,7 +21,6 @@ app.get("/scrapeh1", async (req: any, res: any) => {
         const $ = cheerio.load(body);
         const html = $("h1"); // Extract only the h1 element
         const text = html.text().trim(); // Get the text and remove any whitespace
-        console.log(text);
 
         res.send(text);
     } catch (error) {
