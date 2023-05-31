@@ -4,7 +4,7 @@ import { useGetLatestScreenshotsTaken } from "@/hooks/useGetLatestScreenshotTake
 import { useGetListScreenshotsTaken } from "@/hooks/useGetListScreenshotsTaken";
 import { useScrapHTML } from "@/hooks/useScrapHTML";
 import { useScrapHTMLArray } from "@/hooks/useScrapHTMLArray";
-import { useScrapPdf } from "@/scrapers/scrapHTML";
+import { useScrapPdf } from "@/hooks/useScrapPdf";
 import { useScrapeJson } from "@/hooks/useScrapeJson";
 import { useScrapeProduct } from "@/hooks/useScrapeProduct";
 import { useState, useEffect, createElement, ReactNode } from "react";
@@ -202,7 +202,7 @@ const ScraperDemo = () => {
   // Display the html array
   const displayHTMLArray = () => {
     if (htmlArray) {
-      return <div>{renderElements(htmlArray)}</div>;
+      return JSON.stringify(htmlArray);
     } else {
       return <div>There is no array data to display</div>;
     }
@@ -211,9 +211,9 @@ const ScraperDemo = () => {
   // Display pdf info and download button
   const displayPdfInfo = () => {
     if (pdf) {
+      console.log(pdf);
       return (
         <div className={styles.data}>
-          {/* <p>Status: {pdf.status}</p> */}
           <h2>{pdf.message}</h2>
           {pdf.status === "success" && (
             <>
@@ -234,9 +234,10 @@ const ScraperDemo = () => {
   // Display json info and download button
   const displayJsonInfo = () => {
     if (json) {
+      console.log(json);
+    
       return (
         <div className={styles.data}>
-          {/* <p>Status: {json.status}</p> */}
           <h2>{json.message}</h2>
           {json.status === "success" && (
             <>
@@ -286,40 +287,6 @@ const ScraperDemo = () => {
   // --------------- Functions ---------------
   const refreshPage = () => {
     window.location.reload();
-  };
-
-  interface ElementObject {
-    tag: string;
-    content: ReactNode | string;
-    attributes: { [key: string]: string };
-  }
-
-  const renderElements = (elementArray: ElementObject[]): ReactNode[] => {
-    return elementArray.map((element, index) => {
-      const { tag, content, attributes } = element;
-
-      if (tag !== "img") {
-        if (Array.isArray(content)) {
-          return createElement(
-            tag,
-            { key: index, ...attributes },
-            renderElements(content)
-          );
-        } else {
-          if (tag === "a" && attributes.href) {
-            // console.log(attributes);
-
-            return (
-              <Link key={index} href={attributes.href}>
-                {content}
-              </Link>
-            );
-          } else {
-            return createElement(tag, { key: index, ...attributes }, content);
-          }
-        }
-      }
-    });
   };
 
   const handleButtonStoreClick = (store: string) => {

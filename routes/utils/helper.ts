@@ -1,12 +1,6 @@
 import UserAgent from "user-agents";
-import express from "express"; // Added express to create the server.
-import axios from "axios"; // Added axios to scrape the website.
-import cheerio from "cheerio"; // Added cheerio to scrape the website.
-import rateLimit from "express-rate-limit"; // Added a limiter since it would not stop scraping the website. So a limiter was added to stop the scraping.
-import cors from "cors"; // Added cors to allow the website to access the api.
 import puppeteer from "puppeteer"; //
 import fs from "fs"; // File system module to read files/file location etc...
-import { title } from "process";
 
 
 
@@ -20,6 +14,9 @@ import { title } from "process";
  */
 export async function fileWriterScrappedData(savepath: string, filename: string, fileformat: string, data: any, res: any) {
     console.log("Writing file" + filename + fileformat);
+    // Path to the file from the standpoint of the client. Without public.
+    const responsePath = "./scraped-json/" + filename + fileformat;
+
     try {
         // Save the elements string as a text file
         fs.writeFile(savepath + filename + fileformat, data, (err: any) => {
@@ -27,13 +24,14 @@ export async function fileWriterScrappedData(savepath: string, filename: string,
                 console.error("Error writing text file:", err);
                 res.status(500).json({ error: "Error saving the scraped data to a file" });
             } else {
-                res.json({ success: true, message: "Scraped data saved to " + filename + fileformat });
+                res.json({ status: "success", message: "Scraped data saved to " + filename + fileformat, filePath: responsePath, filename: filename + fileformat });
             }
         });
     } catch (error) {
         console.error("Error writing text file:", error);
     }
 }
+
 
 // A function that convert link to this format : www_komplett_no_2023327164050
 // Remove http: or https: and replace all special characters with _
@@ -117,15 +115,6 @@ export const scrapFromStore = async (store: StoreName, product: string) => {
     console.log("Scraping from store: " + store + " and product: " + product);
 
     const encodedProduct = encodeURIComponent(product);
-
-    // const storeUrls: Record<StoreName, string> = {
-    //   "komplett": "https://www.komplett.no/search?q=" + encodedProduct,
-    //   "power": "https://www.power.no/search/?q=" + encodedProduct,
-    //   "elkjop": "https://www.elkjop.no/search/" + encodedProduct,
-    //   "all": "",
-    // };
-    // const searchProduct: string = storeUrls[store] || storeUrls["komplett"];
-    // console.log(searchProduct);
 
     //  ----------- Handle the different stores  ----------------
     // -------------------- Power ------------------------------
@@ -287,9 +276,6 @@ export const scrapFromStore = async (store: StoreName, product: string) => {
     } else {
         console.log("No store found");
     }
-
-    // await waitTime(2);
-    // await page.screenshot({ path: `${store}.png` });
 
 }
 

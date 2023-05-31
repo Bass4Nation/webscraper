@@ -13,7 +13,6 @@ import { errorcodes } from "./utils/helper";
 const app = express();
 
 app.get("/lastscreenshottaken", async (req: Request, res: Response) => {
-    // const url: string = req.query.url as string;
     // Path to folder where screenshots is placed from standpoint to the server"
     //  ./public/scraped-screenshots/......
     const folder_path = "./public/scraped-screenshots";

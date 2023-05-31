@@ -1,6 +1,4 @@
 import express, { Request, Response } from "express";
-// import axios from "axios";
-// import cheerio from "cheerio";
 import { errorcodes } from "./utils/helper";
 import { waitTime } from "./utils/helper";
 import { titleFromURL } from "./utils/helper";
@@ -22,9 +20,7 @@ app.get("/scrapescreenshot", async (req: any, res: any) => {
     const filetype = ".png";
   
     filename = await titleFromURL(url);
-  
-    // console.log(filename);
-  
+    
     const savepath = "./public/scraped-screenshots/" + filename + filetype;
     const responsePath = "./scraped-screenshots/" + filename + filetype; // Path to the file from the standpoint of the client. Without public.
   

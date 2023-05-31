@@ -12,9 +12,11 @@ import { screenshotList } from "./utils/helper";
 
 const app = express();
 
-app.get("/scrapescreenshotlist", async (req: any, res: any) => {
+app.get("/scrapescreenshotlist", async (req: Request, res: Response) => {
     // Path to folder where screenshots is placed from standpoint to the server
     //  ./public/scraped-screenshots/......
+    console.log("Finding all screenshots taken on the server.");
+    
     const folder_path = "./public/scraped-screenshots";
     try {
       const list = await screenshotList(folder_path);

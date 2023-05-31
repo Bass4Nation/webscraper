@@ -22,7 +22,6 @@ export const useScrapHTML = (
         try {
           const response = await axios.get(serverUrl + encodeURIComponent(url)); // get the html from the server sending the url
           const html = response.data; // get the html from the response
-          // console.log(html);
   
           setRawHTML(html);
           onCompletion();

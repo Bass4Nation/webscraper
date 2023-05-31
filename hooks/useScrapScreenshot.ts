@@ -10,11 +10,8 @@ import axios from "axios";
  * @param {() => void} resetTrigger - A function to reset the trigger value.
  * @returns {any} - The path for scraped screenshot
  */
-
 export const useScrapScreenshot = (url: string, trigger: boolean, resetTrigger: () => void) => {
-  // Implement the hook logic here
-    console.log("HOOK USED: useScrapScreenshot");
-    
+  // Implement the hook logic here    
   const serverUrl = serverCommand("scrapescreenshot");
 
   const [screenshotInfo, setScreenshotInfo] = useState<{

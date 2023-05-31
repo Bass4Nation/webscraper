@@ -36,5 +36,5 @@ export const useGetListScreenshotsTaken = () => {
   };
 
   const serverCommand = (command: string) => {
-    return "http://localhost:3002/" + command + "?url="; // command is the server command to be executed
+    return "http://localhost:3002/" + command ; // command is the server command to be executed
   };

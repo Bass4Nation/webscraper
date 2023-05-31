@@ -1,7 +1,14 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
 
-const useScrapPdf = (
+/**
+ * 
+ * @param url - url to be scraped
+ * @param trigger - trigger to start scraping
+ * @param onCompletion - callback function to be executed when scraping is done
+ * @returns - a structure with status, message and filePath.
+ */
+export const useScrapPdf = (
   url: string,
   trigger: boolean,
   onCompletion: () => void

@@ -36,7 +36,6 @@ app.get("/scrapejson", async (req: any, res: any) => {
       };
   
       const elements = $("body > *").toArray().map((element: any) => createObject($(element))); // Get the body and all the children of the body and create an object for each child.
-      // console.log(elements);
   
       // Convert the elements array to a string representation
       const elementsString = JSON.stringify(elements, null, 2);

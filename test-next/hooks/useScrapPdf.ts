@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from "axios";
 
-const useScrapPdf = (
+export const useScrapPdf = (
   url: string,
   trigger: boolean,
   onCompletion: () => void

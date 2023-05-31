@@ -23,7 +23,6 @@ app.get("/scrapepdf", async (req: any, res: any) => {
     let filename = "template";
     const filetype = ".pdf";
   
-    // console.log(url);
   
     filename = await titleFromURL(url);
   

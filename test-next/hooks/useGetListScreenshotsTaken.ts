@@ -11,6 +11,8 @@ export const useGetListScreenshotsTaken = () => {
         try {
           const response = await axios.get(serverUrl); // get the html from the server sending the url
           const elementsArray = response.data;
+          console.log("elementsArray: ", elementsArray);
+          
   
           setElements(elementsArray);
         } catch (error: any) {
@@ -26,10 +28,11 @@ export const useGetListScreenshotsTaken = () => {
   
       fetchHTML();
     }, [serverUrl]); // Empty array ensures the effect runs only on component mount
-  
+    console.log("elements: ", elements);
+    
     return elements;
   };
 
   const serverCommand = (command: string) => {
-    return "http://localhost:3002/" + command + "?url="; // command is the server command to be executed
+    return "http://localhost:3002/" + command ; // command is the server command to be executed
   };

@@ -1,14 +1,8 @@
 // ----------------- Imports ----------------- //
-import UserAgent from "user-agents";
 import http from 'http';
 import express from "express"; // Added express to create the server.
-import axios from "axios"; // Added axios to scrape the website.
-import cheerio from "cheerio"; // Added cheerio to scrape the website.
 import rateLimit from "express-rate-limit"; // Added a limiter since it would not stop scraping the website. So a limiter was added to stop the scraping.
 import cors from "cors"; // Added cors to allow the website to access the api.
-import puppeteer from "puppeteer"; //
-import fs from "fs"; // File system module to read files/file location etc...
-import { title } from "process";
 // -------------- Routes imports --------------- //
 import scrape from "./routes/scrape";
 import scrapeh1 from "./routes/scrapeh1";
@@ -18,6 +12,7 @@ import scrapescreenshot from "./routes/scrapescreenshot";
 import scrapepdf from "./routes/scrapepdf";
 import latestscreenshottaken from "./routes/lastscreenshottaken";
 import scrapeproduct from "./routes/scrapeproduct";
+import scrapescreenshotlist from "./routes/scrapescreenshotlist";
 
 /**
  * This is the main file for the webscraper API. 
@@ -35,9 +30,6 @@ const PORT = process.env.PORT || 3002; // Changed the port to 3000 since 8080 wa
 let server: http.Server;
 
 // ----------------- Start the server ----------------- //
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
 
 if (process.env.NODE_ENV !== 'test') {
   const serverInstance = app.listen(PORT, () => {
@@ -101,7 +93,7 @@ app.get("/scrapescreenshot", scrapescreenshot);
 
 // ----------------- Routes for scaping and returning as array ----------------- //
 // Get a list over all screenshots taken. With filepath and a way display them.
-app.get("/scrapescreenshotlist", scrapescreenshot);
+app.get("/scrapescreenshotlist", scrapescreenshotlist);
 
 // ----------------- Routes for Latest screenshot ----------------- //
 // Get the last screenshot taken. With filepath and a way display them.
@@ -112,7 +104,4 @@ app.get("/scrapepdf", scrapepdf);
 
 app.get("/scrapproduct", scrapeproduct);
 
-
-// export default app; // Export the app to be used in other files.
-// export default serverInstance; // Export the app to be used in other files. Only Uncomment this when testing with Jest.
 export default app;

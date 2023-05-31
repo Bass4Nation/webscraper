@@ -11,7 +11,6 @@ import axios from "axios";
  * @param onCompletion - callback function to be called when the scrape is completed.
  */
 export const useScrapeProduct = (store: string, product: string, trigger: boolean, onCompletion: () => void) => {
-    console.log("useScrapeProduct", store, product);
     const storeChosen: string = store;
     const productChosen: string = `&product=${product}`;
     const serverUrl = serverCommand("scrapproduct");
