@@ -11,6 +11,7 @@ It is not permitted to use on webpages that are not allowing webscraping. This c
   - [How to run the demo for the webscraper](#how-to-run-the-demo-for-the-webscraper)
     - [As a new project](#as-a-new-project)
     - [Use the existing test project in github repository.](#use-the-existing-test-project-in-github-repository)
+      - [PS: If getting error something like this:](#ps-if-getting-error-something-like-this)
       - [Some usage of the framework](#some-usage-of-the-framework)
   - [Additional notes](#additional-notes)
     - [Where to find the framework after downloading to your project?](#where-to-find-the-framework-after-downloading-to-your-project)
@@ -66,6 +67,28 @@ This was used for developing this framework and is made for easy test of this fr
 3. Run `npm install` to install the dependencies.
 4. Just run `npm run dev` to start the server and the website.
 5. On the website launched `localhost:3000`, paste the URL of the website you want to scrape and click "Scrape". The scraped data will be displayed on the page/console and on the server at this moment. (This is just a test to see if the scraping works. And an example on how to use the scraper.) Could be a good idea to use a page that is not protected by a robot.txt file. Ex: https://b4n.no/ it is okey to use since it is my portfolio page and I allow the use of a scraper on that page.
+
+#### PS: If getting error something like this:
+``` 
+scrapescreenshotlist.ts:
+Error: ENOENT: no such file or directory, scandir './public/scraped-screenshots'
+    at Object.readdirSync (node:fs:1438:3)
+    at C:\Users\USER\Desktop\webscraper-main\test-next\routes\utils\helper.ts:68:22
+    at Generator.next (<anonymous>)
+    at C:\Users\USER\Desktop\webscraper-main\test-next\routes\utils\helper.ts:8:71
+    at new Promise (<anonymous>)
+    at __awaiter (C:\Users\USER\Desktop\webscraper-main\test-next\routes\utils\helper.ts:4:12)       
+    at screenshotList (C:\Users\USER\Desktop\webscraper-main\test-next\routes\utils\helper.ts:64:61) 
+    at C:\Users\USER\Desktop\webscraper-main\test-next\routes\scrapescreenshotlist.ts:19:40
+    at Generator.next (<anonymous>)
+    at C:\Users\USER\Desktop\webscraper-main\test-next\routes\scrapescreenshotlist.ts:8:71 {
+  errno: -4058,
+  syscall: 'scandir',
+  code: 'ENOENT',
+  path: './public/scraped-screenshots'
+}
+```
+A fix is to install the webscraper again to test-next folder. (npm i Bass4Nation/webscraper) and after npx install-webscraper again. (If the folders are missing in public folder. Don't know why this happens. Maybe it is because I don't want images to be uploaded to github so I have added it to gitignore.)
 
    
 #### Some usage of the framework
